@@ -1,7 +1,9 @@
-
-    ***  Egothor Software License version 2.00
-    ***  Copyright (C) 2005-2016 Leo Galambos
-    ***  All rights reserved
+/*
+                    Egothor Software License version 1.00
+                    Copyright (C) 1997-2004 Leo Galambos.
+                 Copyright (C) 2002-2004 "Egothor developers"
+                      on behalf of the Egothor Project.
+                             All rights reserved.
 
    This  software  is  copyrighted  by  the "Egothor developers". If this
    license applies to a single file or document, the "Egothor developers"
@@ -23,16 +25,16 @@
        and/or other materials provided with the distribution.
     3. The name "Egothor" must not be used to endorse or promote products
        derived  from  this software without prior written permission. For
-       written permission, please contact leo.galambos@egothor.org
+       written permission, please contact Leo.G@seznam.cz
     4. Products  derived  from this software may not be called "Egothor",
        nor  may  "Egothor"  appear  in  their name, without prior written
-       permission from leo.galambos@egothor.org.
+       permission from Leo.G@seznam.cz.
 
    In addition, we request that you include in the end-user documentation
    provided  with  the  redistribution  and/or  in the software itself an
    acknowledgement equivalent to the following:
    "This product includes software developed by the Egothor Project.
-    http://www.egothor.org/"
+    http://egothor.sf.net/"
 
    THIS  SOFTWARE  IS  PROVIDED  ``AS  IS''  AND ANY EXPRESSED OR IMPLIED
    WARRANTIES,  INCLUDING,  BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -48,4 +50,51 @@
 
    This  software  consists  of  voluntary  contributions  made  by  many
    individuals  on  behalf  of  the  Egothor  Project  and was originally
-   created by Leo Galambos (leo.galambos@egothor.org).
+   created by Leo Galambos (Leo.G@seznam.cz).
+ */
+package org.egothor.stemmer;
+
+/**
+ *  A Cell is a portion of a trie.
+ *
+ * @author    Leo Galambos
+ */
+class Cell {
+    // next row id in this way
+    int ref = -1;
+    // command of the cell
+    int cmd = -1;
+    // how many cmd-s was in subtrie before pack()
+    int cnt = 0;
+    // how many chars would be discarded from input key in this way
+    int skip = 0;
+
+
+    /**
+     *  Constructor for the Cell object.
+     */
+    Cell() { }
+
+
+    /**
+     *  Construct a Cell using the properties of the given Cell.
+     *
+     * @param  a  the Cell whose properties will be used
+     */
+    Cell(Cell a) {
+        ref = a.ref;
+        cmd = a.cmd;
+        cnt = a.cnt;
+        skip = a.skip;
+    }
+
+
+    /**
+     *  Return a String containing this Cell's attributes.
+     *
+     * @return    a String representation of this Cell
+     */
+    public String toString() {
+        return "ref(" + ref + ")cmd(" + cmd + ")cnt(" + cnt + ")skp(" + skip + ")";
+    }
+}

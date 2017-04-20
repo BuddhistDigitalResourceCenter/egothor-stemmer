@@ -1,7 +1,9 @@
-
-    ***  Egothor Software License version 2.00
-    ***  Copyright (C) 2005-2016 Leo Galambos
-    ***  All rights reserved
+/*
+                    Egothor Software License version 1.00
+                    Copyright (C) 1997-2004 Leo Galambos.
+                 Copyright (C) 2002-2004 "Egothor developers"
+                      on behalf of the Egothor Project.
+                             All rights reserved.
 
    This  software  is  copyrighted  by  the "Egothor developers". If this
    license applies to a single file or document, the "Egothor developers"
@@ -23,16 +25,16 @@
        and/or other materials provided with the distribution.
     3. The name "Egothor" must not be used to endorse or promote products
        derived  from  this software without prior written permission. For
-       written permission, please contact leo.galambos@egothor.org
+       written permission, please contact Leo.G@seznam.cz
     4. Products  derived  from this software may not be called "Egothor",
        nor  may  "Egothor"  appear  in  their name, without prior written
-       permission from leo.galambos@egothor.org.
+       permission from Leo.G@seznam.cz.
 
    In addition, we request that you include in the end-user documentation
    provided  with  the  redistribution  and/or  in the software itself an
    acknowledgement equivalent to the following:
    "This product includes software developed by the Egothor Project.
-    http://www.egothor.org/"
+    http://egothor.sf.net/"
 
    THIS  SOFTWARE  IS  PROVIDED  ``AS  IS''  AND ANY EXPRESSED OR IMPLIED
    WARRANTIES,  INCLUDING,  BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -48,4 +50,45 @@
 
    This  software  consists  of  voluntary  contributions  made  by  many
    individuals  on  behalf  of  the  Egothor  Project  and was originally
-   created by Leo Galambos (leo.galambos@egothor.org).
+   created by Leo Galambos (Leo.G@seznam.cz).
+ */
+package org.egothor.stemmer;
+
+import java.util.*;
+
+/**
+ *  The Optimizer class is a Trie that will be reduced (have empty rows
+ *  removed). This is the result of allowing a joining of rows when there
+ *  is no collision between non-<tt>null</tt> values in the rows.
+ *  Information loss, resulting in the stemmer not being able to recognize
+ *  words (as in Optimizer), is curtailed, allowing the stemmer to
+ *  recognize words for which the original trie was built. Use of this
+ *  class allows the stemmer to be self-teaching.
+ *
+ * @author    Leo Galambos
+ */
+public class Optimizer2 extends Optimizer {
+    /**
+     *  Constructor for the Optimizer2 object.
+     */
+    public Optimizer2() { }
+
+
+    /**
+     *  Merge the given Cells and return the resulting Cell.
+     *
+     * @param  m  the master Cell
+     * @param  e  the existing Cell
+     * @return    the resulting Cell, or <tt>null</tt> if the operation
+     *      cannot be realized
+     */
+    public Cell merge(Cell m, Cell e) {
+        if (m.cmd == e.cmd && m.ref == e.ref && m.skip == e.skip) {
+            Cell c = new Cell(m);
+            c.cnt += e.cnt;
+            return c;
+        } else {
+            return null;
+        }
+    }
+}
