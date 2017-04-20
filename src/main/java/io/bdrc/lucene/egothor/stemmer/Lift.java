@@ -61,6 +61,8 @@ import java.util.*;
  *  trie. Lift's <i>raison d'etre</i> is to implement reduction of the trie
  *  via the Lift-Up method., which makes the data structure less liable to
  *  overstemming.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

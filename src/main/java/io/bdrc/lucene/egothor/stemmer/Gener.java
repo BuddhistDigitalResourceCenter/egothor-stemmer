@@ -59,6 +59,8 @@ import java.util.*;
 /**
  *  The Gener object helps in the discarding of nodes which break the
  *  reduction effort and defend the structure against large reductions.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

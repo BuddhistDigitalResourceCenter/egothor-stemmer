@@ -62,6 +62,8 @@ package io.bdrc.lucene.egothor.stemmer;
  *  words (as in Optimizer), is curtailed, allowing the stemmer to
  *  recognize words for which the original trie was built. Use of this
  *  class allows the stemmer to be self-teaching.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

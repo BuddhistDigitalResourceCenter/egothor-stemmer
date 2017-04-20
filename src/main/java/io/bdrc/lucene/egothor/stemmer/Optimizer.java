@@ -60,6 +60,8 @@ import java.util.*;
  *  The Optimizer class is a Trie that will be reduced (have empty rows
  *  removed). The reduction will be made by joining two rows where the
  *  first is a subset of the second.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

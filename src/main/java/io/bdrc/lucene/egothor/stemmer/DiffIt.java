@@ -62,6 +62,8 @@ import java.util.*;
 /**
  *  The DiffIt class is a means generate patch commands from an already
  *  prepared stemmer table.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

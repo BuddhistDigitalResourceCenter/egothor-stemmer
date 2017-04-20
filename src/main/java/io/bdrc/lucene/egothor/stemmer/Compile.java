@@ -62,6 +62,8 @@ import java.util.*;
 
 /**
  *  The Compile class is used to compile a stemmer table.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

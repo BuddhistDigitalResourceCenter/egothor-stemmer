@@ -56,6 +56,8 @@ package io.bdrc.lucene.egothor.stemmer;
 
 /**
  *  A Cell is a portion of a trie.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

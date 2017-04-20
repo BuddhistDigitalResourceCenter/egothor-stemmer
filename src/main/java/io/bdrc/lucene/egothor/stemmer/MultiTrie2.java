@@ -59,9 +59,11 @@ import java.io.*;
 
 /**
  *  The MultiTrie is a Trie of Tries. It stores words and their associated
- *  patch commands. The MultiTrie handles patch commmands broken into their
+ *  patch commands. The MultiTrie handles patch commands broken into their
  *  constituent parts, as a MultiTrie does, but the commands are delimited
  *  by the skip command.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

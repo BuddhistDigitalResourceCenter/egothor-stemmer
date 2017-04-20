@@ -60,7 +60,9 @@ package io.bdrc.lucene.egothor.stemmer;
  *  example, to reduce the word teacher to its root teach the patch string
  *  Db would be generated. This command tells the stemmer to delete the
  *  last 2 characters from the word teacher to reach the stem (the patch
- *  commands are applied starting from the last character in order to save
+ *  commands are applied starting from the last character in order to save.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

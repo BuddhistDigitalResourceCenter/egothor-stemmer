@@ -59,6 +59,8 @@ import java.util.*;
 /**
  *  The Reduce object is used to remove gaps in a Trie which stores a
  *  dictionary..
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

@@ -59,6 +59,8 @@ import java.io.*;
 
 /**
  *  The Row class represents a row in a matrix representation of a trie.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

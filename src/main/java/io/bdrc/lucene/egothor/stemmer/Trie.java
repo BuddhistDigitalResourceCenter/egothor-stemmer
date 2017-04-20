@@ -63,6 +63,8 @@ import java.io.*;
  *  commands. A trie can be termed forward (keys read from left to right)
  *  or backward (keys read from right to left). This property will vary
  *  depending on the language for which a Trie is constructed.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */

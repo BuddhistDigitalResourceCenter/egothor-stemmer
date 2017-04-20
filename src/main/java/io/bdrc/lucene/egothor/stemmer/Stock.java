@@ -67,6 +67,8 @@ import java.io.*;
  *  more characters), and if the transformation generates a short stem
  *  (under 4 characters), do not accept it and instead use the original
  *  word rather than the very short stem that could be a mistake.
+ *  
+ *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */
