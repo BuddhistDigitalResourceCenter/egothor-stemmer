@@ -55,6 +55,9 @@
 package io.bdrc.lucene.egothor.stemmer;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -115,9 +118,7 @@ public class Compile {
                 allocTrie();
 
                 System.out.println(args[i]);
-                in = new LineNumberReader(new BufferedReader(
-                        new InputStreamReader(
-                        new FileInputStream(args[i]), charset)));
+                in = new LineNumberReader(Files.newBufferedReader(Paths.get(args[i]), Charset.forName(charset)));
                 for (String line = in.readLine(); line != null; line = in.readLine()) {
                     try {
                         line = line.toLowerCase();
@@ -179,7 +180,7 @@ public class Compile {
 
                 DataOutputStream os = new DataOutputStream(
                         new BufferedOutputStream(
-                        new FileOutputStream(args[i] + ".out")));
+                        Files.newOutputStream(Paths.get(args[i] + ".out"))));
                 os.writeUTF(args[0]);
                 trie.store(os);
                 os.close();

@@ -55,6 +55,8 @@
 package io.bdrc.lucene.egothor.stemmer;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -100,8 +102,7 @@ public class DiffIt {
 //          System.out.println("[" + args[i] + "]");
             Diff diff = new Diff(ins, del, rep, nop);
             try {
-                in = new LineNumberReader(
-                        new BufferedReader(new FileReader(args[i])));
+                in = new LineNumberReader(Files.newBufferedReader(Paths.get(args[i])));
                 for (String line = in.readLine(); line != null; line = in.readLine()) {
                     try {
                         line = line.toLowerCase();
