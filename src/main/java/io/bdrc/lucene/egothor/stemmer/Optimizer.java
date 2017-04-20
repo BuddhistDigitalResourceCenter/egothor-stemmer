@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.util.*;
 
@@ -78,9 +78,9 @@ public class Optimizer extends Reduce {
      * @return       the newly consolidated Trie
      */
     public Trie optimize(Trie orig) {
-        Vector cmds = orig.cmds;
-        Vector rows = new Vector();
-        Vector orows = orig.rows;
+        Vector<String> cmds = orig.cmds;
+        Vector<Row> rows = new Vector<Row>();
+        Vector<Row> orows = orig.rows;
         int remap[] = new int[orows.size()];
 
         for (int j = orows.size() - 1; j >= 0; j--) {
@@ -105,7 +105,7 @@ public class Optimizer extends Reduce {
 
         int root = remap[orig.root];
         Arrays.fill(remap, -1);
-        rows = removeGaps(root, rows, new Vector(), remap);
+        rows = removeGaps(root, rows, new Vector<Row>(), remap);
 
         return new Trie(orig.forward, remap[root], cmds, rows);
     }
@@ -120,10 +120,10 @@ public class Optimizer extends Reduce {
      *      operation cannot be realized
      */
     public Row merge(Row master, Row existing) {
-        Iterator i = master.cells.keySet().iterator();
+        Iterator<Character> i = master.cells.keySet().iterator();
         Row n = new Row();
         for (; i.hasNext(); ) {
-            Character ch = (Character) i.next();
+            Character ch = i.next();
             // XXX also must handle Cnt and Skip !!
             Cell a = (Cell) master.cells.get(ch);
             Cell b = (Cell) existing.cells.get(ch);

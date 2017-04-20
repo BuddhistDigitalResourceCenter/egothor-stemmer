@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.util.*;
 import java.io.*;
@@ -63,7 +63,7 @@ import java.io.*;
  * @author    Leo Galambos
  */
 public class Row {
-    TreeMap cells = new TreeMap();
+    TreeMap<Character, Cell> cells = new TreeMap<Character, Cell>();
     int uniformCnt = 0;
     int uniformSkip = 0;
 
@@ -149,7 +149,7 @@ public class Row {
      * @return    the number of cells in use
      */
     public int getCells() {
-        Iterator i = cells.keySet().iterator();
+        Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
             Character c = (Character) i.next();
@@ -169,7 +169,7 @@ public class Row {
      * @return    the number of references
      */
     public int getCellsPnt() {
-        Iterator i = cells.keySet().iterator();
+        Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
             Character c = (Character) i.next();
@@ -188,7 +188,7 @@ public class Row {
      * @return    the number of patch commands
      */
     public int getCellsVal() {
-        Iterator i = cells.keySet().iterator();
+        Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
             Character c = (Character) i.next();
@@ -249,7 +249,7 @@ public class Row {
      */
     public void store(DataOutput os) throws IOException {
         os.writeInt(cells.size());
-        Iterator i = cells.keySet().iterator();
+        Iterator<Character> i = cells.keySet().iterator();
         for (; i.hasNext(); ) {
             Character c = (Character) i.next();
             Cell e = at(c);
@@ -276,7 +276,7 @@ public class Row {
      *      (at least) two different cells
      */
     public int uniformCmd(boolean eqSkip) {
-        Iterator i = cells.values().iterator();
+        Iterator<Cell> i = cells.values().iterator();
         int ret = -1;
         uniformCnt = 1;
         uniformSkip = 0;
@@ -312,7 +312,7 @@ public class Row {
      *  Write the contents of this Row to stdout.
      */
     public void print() {
-        for (Iterator i = cells.keySet().iterator(); i.hasNext(); ) {
+        for (Iterator<Character> i = cells.keySet().iterator(); i.hasNext(); ) {
             Character ch = (Character) i.next();
             Cell c = at(ch);
             System.out.print("[" + ch + ":" + c + "]");

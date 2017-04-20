@@ -52,9 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
-
-import java.util.*;
+package io.bdrc.lucene.egothor.stemmer;
 
 /**
  *  The Optimizer class is a Trie that will be reduced (have empty rows

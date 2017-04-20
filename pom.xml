@@ -10,8 +10,8 @@
   <url>https://github.com/BuddhistDigitalResourceCenter/egothor-stemmer</url>
   <licenses>
     <license>
-      <name>The Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <name>Egothor Software License version 2.00</name>
+      <url>https://www.egothor.org/license/2.00.txt</url>
     </license>
   </licenses>
   <properties>

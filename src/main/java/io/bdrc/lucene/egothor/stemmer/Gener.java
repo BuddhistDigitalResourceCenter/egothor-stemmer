@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.util.*;
 
@@ -77,9 +77,9 @@ public class Gener extends Reduce {
      * @return       a new optimized Trie
      */
     public Trie optimize(Trie orig) {
-        Vector cmds = orig.cmds;
-        Vector rows = new Vector();
-        Vector orows = orig.rows;
+        Vector<String> cmds = orig.cmds;
+        Vector<Row> rows = new Vector<Row>();
+        Vector<Row> orows = orig.rows;
         int remap[] = new int[orows.size()];
 
         Arrays.fill(remap, 1);
@@ -90,7 +90,7 @@ public class Gener extends Reduce {
         }
 
         Arrays.fill(remap, -1);
-        rows = removeGaps(orig.root, orows, new Vector(), remap);
+        rows = removeGaps(orig.root, orows, new Vector<Row>(), remap);
 
         return new Trie(orig.forward, remap[orig.root], cmds, rows);
     }
@@ -107,8 +107,8 @@ public class Gener extends Reduce {
      */
     public boolean eat(Row in, int remap[]) {
         int sum = 0;
-        for (Iterator i = in.cells.values().iterator(); i.hasNext(); ) {
-            Cell c = (Cell) i.next();
+        for (Iterator<Cell> i = in.cells.values().iterator(); i.hasNext(); ) {
+            Cell c = i.next();
             sum += c.cnt;
             if (c.ref >= 0) {
                 if (remap[c.ref] == 0) {
@@ -118,8 +118,8 @@ public class Gener extends Reduce {
         }
         int frame = sum / 10;
         boolean live = false;
-        for (Iterator i = in.cells.values().iterator(); i.hasNext(); ) {
-            Cell c = (Cell) i.next();
+        for (Iterator<Cell> i = in.cells.values().iterator(); i.hasNext(); ) {
+            Cell c = i.next();
             if (c.cnt < frame && c.cmd >= 0) {
                 c.cnt = 0;
                 c.cmd = -1;

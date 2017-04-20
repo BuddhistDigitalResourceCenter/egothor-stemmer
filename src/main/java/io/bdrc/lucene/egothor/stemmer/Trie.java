@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.util.*;
 import java.io.*;
@@ -67,8 +67,8 @@ import java.io.*;
  * @author    Leo Galambos
  */
 public class Trie {
-    Vector rows = new Vector();
-    Vector cmds = new Vector();
+    Vector<Row> rows = new Vector<Row>();
+    Vector<String> cmds = new Vector<String>();
     int root;
 
     boolean forward = false;
@@ -114,7 +114,7 @@ public class Trie {
      * @param  rows     a Vector of Vectors. Each inner Vector is a node of
      *      this Trie
      */
-    public Trie(boolean forward, int root, Vector cmds, Vector rows) {
+    public Trie(boolean forward, int root, Vector<String> cmds, Vector<Row> rows) {
         this.rows = rows;
         this.cmds = cmds;
         this.root = root;
@@ -193,7 +193,7 @@ public class Trie {
      */
     public int getCells() {
         int size = 0;
-        Enumeration e = rows.elements();
+        Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
             size += ((Row) e.nextElement()).getCells();
         }
@@ -208,7 +208,7 @@ public class Trie {
      */
     public int getCellsPnt() {
         int size = 0;
-        Enumeration e = rows.elements();
+        Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
             size += ((Row) e.nextElement()).getCellsPnt();
         }
@@ -223,7 +223,7 @@ public class Trie {
      */
     public int getCellsVal() {
         int size = 0;
-        Enumeration e = rows.elements();
+        Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
             size += ((Row) e.nextElement()).getCellsVal();
         }
@@ -245,7 +245,6 @@ public class Trie {
         int cmd = -1;
         StrEnum e = new StrEnum(key, forward);
         Character ch = null;
-        Character aux = null;
 
         for (int i = 0; i < key.length(); ) {
             ch = new Character(e.next());
@@ -259,9 +258,7 @@ public class Trie {
             cmd = c.cmd;
 
             for (int skip = c.skip; skip > 0; skip--) {
-                if (i < key.length()) {
-                    aux = new Character(e.next());
-                } else {
+                if (i >= key.length()) {
                     return null;
                 }
                 i++;
@@ -332,15 +329,15 @@ public class Trie {
     public void store(DataOutput os) throws IOException {
         os.writeBoolean(forward);
         os.writeInt(root);
-        Enumeration e = cmds.elements();
+        Enumeration<String> e = cmds.elements();
         os.writeInt(cmds.size());
         while (e.hasMoreElements()) {
             os.writeUTF((String) e.nextElement());
         }
-        e = rows.elements();
+        Enumeration<Row> erow = rows.elements();
         os.writeInt(rows.size());
-        while (e.hasMoreElements()) {
-            Row r = (Row) e.nextElement();
+        while (erow.hasMoreElements()) {
+            Row r = erow.nextElement();
             r.store(os);
         }
     }

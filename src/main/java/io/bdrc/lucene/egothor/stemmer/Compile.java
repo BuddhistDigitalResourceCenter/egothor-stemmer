@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.io.*;
 import java.util.*;
@@ -111,8 +111,6 @@ public class Compile {
 //          System.out.println("[" + args[i] + "]");
             Diff diff = new Diff();
             try {
-                int stems = 0;
-                int words = 0;
 
                 allocTrie();
 
@@ -127,13 +125,11 @@ public class Compile {
                         String stem = st.nextToken();
                         if (storeorig) {
                             trie.add(stem, "-a");
-                            words++;
                         }
                         while (st.hasMoreTokens()) {
                             String token = st.nextToken();
                             if (token.equals(stem) == false) {
                                 trie.add(token, diff.exec(token, stem));
-                                words++;
                             }
                         }
                     } catch (java.util.NoSuchElementException x) {
@@ -218,12 +214,12 @@ public class Compile {
      * @param  storeorig  Description of the Parameter
      */
     static void testTrie(Trie trie, String file, boolean usefull, boolean storeorig) {
+    	LineNumberReader in = null;
         try {
-            LineNumberReader in = new LineNumberReader(
+            in = new LineNumberReader(
                     new BufferedReader(new FileReader(file)));
             int words = 0;
             int nobug = 0;
-            Diff diff = new Diff();
 
             for (String line = in.readLine(); line != null; line = in.readLine()) {
                 try {
@@ -233,7 +229,7 @@ public class Compile {
                     if (storeorig) {
                         words++;
                         String cmd = (usefull) ? trie.getFully(stem) : trie.getLastOnPath(stem);
-                        String stm = diff.apply(new StringBuffer(stem), cmd).toString();
+                        String stm = Diff.apply(new StringBuffer(stem), cmd).toString();
                         if (stm.equalsIgnoreCase(stem)) {
                             nobug++;
                         }
@@ -245,7 +241,7 @@ public class Compile {
                         }
                         words++;
                         String cmd = (usefull) ? trie.getFully(token) : trie.getLastOnPath(token);
-                        String stm = diff.apply(new StringBuffer(token), cmd).toString();
+                        String stm = Diff.apply(new StringBuffer(token), cmd).toString();
                         if (stm.equalsIgnoreCase(stem)) {
                             nobug++;
                         }
@@ -259,6 +255,12 @@ public class Compile {
             x.printStackTrace();
         } catch (IOException x) {
             x.printStackTrace();
+        } finally {
+        	try {
+				in.close();
+			} catch (IOException x) {
+				x.printStackTrace();
+			}
         }
     }
 }

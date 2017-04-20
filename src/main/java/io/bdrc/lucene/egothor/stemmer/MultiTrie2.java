@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.util.*;
 import java.io.*;
@@ -279,10 +279,10 @@ public class MultiTrie2 extends MultiTrie {
      * @return     the newly reduced Trie
      */
     public Trie reduce(Reduce by) {
-        Vector h = new Vector();
-        Enumeration e = tries.elements();
+        Vector<Trie> h = new Vector<Trie>();
+        Enumeration<Trie> e = tries.elements();
         while (e.hasMoreElements()) {
-            Trie a = (Trie) e.nextElement();
+            Trie a = e.nextElement();
             h.addElement(a.reduce(by));
         }
         MultiTrie2 m = new MultiTrie2(forward);

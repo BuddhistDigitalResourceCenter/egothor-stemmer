@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.util.*;
 import java.io.*;
@@ -67,7 +67,7 @@ import java.io.*;
 public class MultiTrie extends Trie {
     final String EOM = "*";
 
-    Vector tries = new Vector();
+    Vector<Trie> tries = new Vector<Trie>();
 
     int BY = 1;
 
@@ -149,7 +149,7 @@ public class MultiTrie extends Trie {
         os.writeBoolean(forward);
         os.writeInt(BY);
         os.writeInt(tries.size());
-        Enumeration e = tries.elements();
+        Enumeration<Trie> e = tries.elements();
         while (e.hasMoreElements()) {
             ((Trie) e.nextElement()).store(os);
         }
@@ -187,8 +187,8 @@ public class MultiTrie extends Trie {
      * @return     the newly reduced Trie
      */
     public Trie reduce(Reduce by) {
-        Vector h = new Vector();
-        Enumeration e = tries.elements();
+        Vector<Trie> h = new Vector<Trie>();
+        Enumeration<Trie> e = tries.elements();
         while (e.hasMoreElements()) {
             Trie a = (Trie) e.nextElement();
             h.addElement(a.reduce(by));
@@ -207,7 +207,7 @@ public class MultiTrie extends Trie {
      */
     public void printInfo(String prefix) {
         int c = 0;
-        for (Enumeration e = tries.elements(); e.hasMoreElements(); c++) {
+        for (Enumeration<Trie> e = tries.elements(); e.hasMoreElements(); c++) {
             Trie a = (Trie) e.nextElement();
             /*
              *  if (c==0) {

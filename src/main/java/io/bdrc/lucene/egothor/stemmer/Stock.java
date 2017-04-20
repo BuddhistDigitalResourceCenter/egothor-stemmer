@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.io.*;
 
@@ -71,7 +71,7 @@ import java.io.*;
  * @author    Leo Galambos
  */
 public class Stock {
-    org.egothor.stemmer.Trie stemmer = null;
+    Trie stemmer = null;
 
 
     /**
@@ -92,9 +92,9 @@ public class Stock {
                     new FileInputStream(stemBin)));
             String method = in.readUTF().toUpperCase();
             if (method.indexOf('M') < 0) {
-                stemmer = new org.egothor.stemmer.Trie(in);
+                stemmer = new Trie(in);
             } else {
-                stemmer = new org.egothor.stemmer.MultiTrie2(in);
+                stemmer = new MultiTrie2(in);
             }
             System.out.println("Default stemmer loaded.");
             in.close();

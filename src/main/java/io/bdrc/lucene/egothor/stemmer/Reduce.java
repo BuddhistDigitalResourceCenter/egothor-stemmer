@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.util.*;
 
@@ -78,13 +78,13 @@ public class Reduce {
      * @return       the restructured Trie
      */
     public Trie optimize(Trie orig) {
-        Vector cmds = orig.cmds;
-        Vector rows = new Vector();
-        Vector orows = orig.rows;
+        Vector<String> cmds = orig.cmds;
+        Vector<Row> rows = new Vector<Row>();
+        Vector<Row> orows = orig.rows;
         int remap[] = new int[orows.size()];
 
         Arrays.fill(remap, -1);
-        rows = removeGaps(orig.root, rows, new Vector(), remap);
+        rows = removeGaps(orig.root, rows, new Vector<Row>(), remap);
 
         return new Trie(orig.forward, remap[orig.root], cmds, rows);
     }
@@ -99,14 +99,14 @@ public class Reduce {
      * @param  remap  Description of the Parameter
      * @return        Description of the Return Value
      */
-    Vector removeGaps(int ind, Vector old, Vector to, int remap[]) {
+    Vector<Row> removeGaps(int ind, Vector<Row> old, Vector<Row> to, int remap[]) {
         remap[ind] = to.size();
 
-        Row now = (Row) old.elementAt(ind);
+        Row now = old.elementAt(ind);
         to.addElement(now);
-        Iterator i = now.cells.values().iterator();
+        Iterator<Cell> i = now.cells.values().iterator();
         for (; i.hasNext(); ) {
-            Cell c = (Cell) i.next();
+            Cell c = i.next();
             if (c.ref >= 0 && remap[c.ref] < 0) {
                 removeGaps(c.ref, old, to, remap);
             }
@@ -130,9 +130,9 @@ public class Reduce {
          */
         public Remap(Row old, int remap[]) {
             super();
-            Iterator i = old.cells.keySet().iterator();
+            Iterator<Character> i = old.cells.keySet().iterator();
             for (; i.hasNext(); ) {
-                Character ch = (Character) i.next();
+                Character ch = i.next();
                 Cell c = old.at(ch);
                 Cell nc;
                 if (c.ref >= 0) {

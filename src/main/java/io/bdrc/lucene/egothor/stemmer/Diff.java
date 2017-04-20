@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 /**
  *  The Diff object generates a patch string. A patch string is actually a
@@ -110,15 +110,14 @@ public class Diff {
      * @return       java.lang.StringBuffer New string
      */
     public static StringBuffer apply(StringBuffer orig, String diff) {
+    	if (orig == null) return null;
+    	
         StringBuffer _orig = new StringBuffer(orig.toString());
 
         try {
 
             if (diff == null) {
                 return _orig;
-            }
-            if (orig == null) {
-                return null;
             }
             int pos = _orig.length() - 1;
             if (pos < 0) {

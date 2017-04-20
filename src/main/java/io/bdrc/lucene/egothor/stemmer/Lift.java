@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package org.egothor.stemmer;
+package io.bdrc.lucene.egothor.stemmer;
 
 import java.util.*;
 
@@ -87,9 +87,9 @@ public class Lift extends Reduce {
      * @return       the reduced Trie
      */
     public Trie optimize(Trie orig) {
-        Vector cmds = orig.cmds;
-        Vector rows = new Vector();
-        Vector orows = orig.rows;
+        Vector<String> cmds = orig.cmds;
+        Vector<Row> rows = new Vector<Row>();
+        Vector<Row> orows = orig.rows;
         int remap[] = new int[orows.size()];
 
         for (int j = orows.size() - 1; j >= 0; j--) {
@@ -97,7 +97,7 @@ public class Lift extends Reduce {
         }
 
         Arrays.fill(remap, -1);
-        rows = removeGaps(orig.root, orows, new Vector(), remap);
+        rows = removeGaps(orig.root, orows, new Vector<Row>(), remap);
 
         return new Trie(orig.forward, remap[orig.root], cmds, rows);
     }
@@ -111,12 +111,12 @@ public class Lift extends Reduce {
      * @param  in     the Row to consider when optimizing
      * @param  nodes  contains the patch commands
      */
-    public void liftUp(Row in, Vector nodes) {
-        Iterator i = in.cells.values().iterator();
+    public void liftUp(Row in, Vector<Row> nodes) {
+        Iterator<Cell> i = in.cells.values().iterator();
         for (; i.hasNext(); ) {
-            Cell c = (Cell) i.next();
+            Cell c = i.next();
             if (c.ref >= 0) {
-                Row to = (Row) nodes.elementAt(c.ref);
+                Row to = nodes.elementAt(c.ref);
                 int sum = to.uniformCmd(changeSkip);
                 if (sum >= 0) {
                     if (sum == c.cmd) {
