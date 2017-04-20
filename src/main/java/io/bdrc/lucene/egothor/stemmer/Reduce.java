@@ -84,7 +84,7 @@ public class Reduce {
         int remap[] = new int[orows.size()];
 
         Arrays.fill(remap, -1);
-        rows = removeGaps(orig.root, rows, new Vector<Row>(), remap);
+        rows = removeGaps(orig.root, orows, rows, remap);
 
         return new Trie(orig.forward, remap[orig.root], cmds, rows);
     }
