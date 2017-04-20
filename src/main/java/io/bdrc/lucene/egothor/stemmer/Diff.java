@@ -243,7 +243,7 @@ public class Diff {
         }
 
         // read the patch string
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         final char base = 'a' - 1;
         char deletes = base;
         char equals = base;
