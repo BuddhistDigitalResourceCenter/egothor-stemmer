@@ -1,5 +1,5 @@
 /*
-                    Egothor Software License version 1.00
+                    Egothor Software License version 2.00
                     Copyright (C) 1997-2004 Leo Galambos.
                  Copyright (C) 2002-2004 "Egothor developers"
                       on behalf of the Egothor Project.
@@ -25,16 +25,16 @@
        and/or other materials provided with the distribution.
     3. The name "Egothor" must not be used to endorse or promote products
        derived  from  this software without prior written permission. For
-       written permission, please contact Leo.G@seznam.cz
+       written permission, please contact leo.galambos@egothor.org
     4. Products  derived  from this software may not be called "Egothor",
        nor  may  "Egothor"  appear  in  their name, without prior written
-       permission from Leo.G@seznam.cz.
+       permission from leo.galambos@egothor.org.
 
    In addition, we request that you include in the end-user documentation
    provided  with  the  redistribution  and/or  in the software itself an
    acknowledgement equivalent to the following:
    "This product includes software developed by the Egothor Project.
-    http://egothor.sf.net/"
+    http://www.egothor.org/"
 
    THIS  SOFTWARE  IS  PROVIDED  ``AS  IS''  AND ANY EXPRESSED OR IMPLIED
    WARRANTIES,  INCLUDING,  BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -50,8 +50,10 @@
 
    This  software  consists  of  voluntary  contributions  made  by  many
    individuals  on  behalf  of  the  Egothor  Project  and was originally
-   created by Leo Galambos (Leo.G@seznam.cz).
+   created by Leo Galambos (leo.galambos@egothor.org).
+
  */
+
 package io.bdrc.lucene.stemmer;
 
 /**
