@@ -154,7 +154,7 @@ public class Row {
         Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
-            Character c = (Character) i.next();
+            Character c = i.next();
             Cell e = at(c);
             if (e.cmd >= 0 || e.ref >= 0) {
                 size++;
@@ -174,7 +174,7 @@ public class Row {
         Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
-            Character c = (Character) i.next();
+            Character c = i.next();
             Cell e = at(c);
             if (e.ref >= 0) {
                 size++;
@@ -193,7 +193,7 @@ public class Row {
         Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
-            Character c = (Character) i.next();
+            Character c = i.next();
             Cell e = at(c);
             if (e.cmd >= 0) {
                 size++;
@@ -283,7 +283,7 @@ public class Row {
         uniformCnt = 1;
         uniformSkip = 0;
         for (; i.hasNext(); ) {
-            Cell c = (Cell) i.next();
+            Cell c = i.next();
             if (c.ref >= 0) {
                 return -1;
             }
@@ -315,11 +315,24 @@ public class Row {
      */
     public void print() {
         for (Iterator<Character> i = cells.keySet().iterator(); i.hasNext(); ) {
-            Character ch = (Character) i.next();
+            Character ch = i.next();
             Cell c = at(ch);
             System.out.print("[" + ch + ":" + c + "]");
         }
         System.out.println();
+    }
+    
+    /**
+     *  Gets a string representing the Row.
+     */
+    public String toString() {
+    	String res = "";
+        for (Iterator<Character> i = cells.keySet().iterator(); i.hasNext(); ) {
+            Character ch = i.next();
+            Cell c = at(ch);
+            res += "[" + ch + ":" + c + "]\n";
+        }
+        return res;
     }
 
 
@@ -330,6 +343,6 @@ public class Row {
      * @return        Description of the Return Value
      */
     Cell at(Character index) {
-        return (Cell) cells.get(index);
+        return cells.get(index);
     }
 }

@@ -75,7 +75,26 @@ public class Trie {
 
     boolean forward = false;
 
+    /**
+     * 
+     * get root Row id
+     * 
+     * @return root Row id
+     */
+    public int getRoot() {
+    	return root;
+    }
 
+    /**
+     * get the value associated with a command ID
+     * 
+     * @param cmd the command id
+     * @return the associated value in the Trie
+     */
+    public String getCommandVal(int cmd) {
+    	return (cmd == -1) ? null : cmds.elementAt(cmd);
+    }
+    
     /**
      *  Constructor for the Trie object.
      *
@@ -182,7 +201,7 @@ public class Trie {
         }
         String R[] = new String[resc];
         for (int j = 0; j < resc; j++) {
-            R[j] = (String) cmds.elementAt(res[j]);
+            R[j] = cmds.elementAt(res[j]);
         }
         return R;
     }
@@ -197,7 +216,7 @@ public class Trie {
         int size = 0;
         Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
-            size += ((Row) e.nextElement()).getCells();
+            size += (e.nextElement()).getCells();
         }
         return size;
     }
@@ -212,7 +231,7 @@ public class Trie {
         int size = 0;
         Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
-            size += ((Row) e.nextElement()).getCellsPnt();
+            size += (e.nextElement()).getCellsPnt();
         }
         return size;
     }
@@ -227,7 +246,7 @@ public class Trie {
         int size = 0;
         Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
-            size += ((Row) e.nextElement()).getCellsVal();
+            size += (e.nextElement()).getCellsVal();
         }
         return size;
     }
@@ -273,7 +292,7 @@ public class Trie {
                 return null;
             }
         }
-        return (cmd == -1) ? null : (String) cmds.elementAt(cmd);
+        return (cmd == -1) ? null : cmds.elementAt(cmd);
     }
 
 
@@ -294,7 +313,7 @@ public class Trie {
             Character ch = new Character(e.next());
             w = now.getCmd(ch);
             if (w >= 0) {
-                last = (String) cmds.elementAt(w);
+                last = cmds.elementAt(w);
             }
             w = now.getRef(ch);
             if (w >= 0) {
@@ -304,7 +323,7 @@ public class Trie {
             }
         }
         w = now.getCmd(new Character(e.next()));
-        return (w >= 0) ? (String) cmds.elementAt(w) : last;
+        return (w >= 0) ? cmds.elementAt(w) : last;
     }
 
 
@@ -318,7 +337,7 @@ public class Trie {
         if (index < 0 || index >= rows.size()) {
             return null;
         }
-        return (Row) rows.elementAt(index);
+        return rows.elementAt(index);
     }
 
 
@@ -334,7 +353,7 @@ public class Trie {
         Enumeration<String> e = cmds.elements();
         os.writeInt(cmds.size());
         while (e.hasMoreElements()) {
-            os.writeUTF((String) e.nextElement());
+            os.writeUTF(e.nextElement());
         }
         Enumeration<Row> erow = rows.elements();
         os.writeInt(rows.size());
@@ -411,6 +430,15 @@ public class Trie {
                 " pntcells " + getCellsPnt());
     }
 
+    /**
+     *  Description of the Method
+     */
+    public String toString() {
+        return "nds " + rows.size() + " cmds " +
+                cmds.size() + " cells " + getCells() +
+                " valcells " + getCellsVal() +
+                " pntcells " + getCellsPnt();
+    }
 
     /**
      *  This class is part of the Egothor Project

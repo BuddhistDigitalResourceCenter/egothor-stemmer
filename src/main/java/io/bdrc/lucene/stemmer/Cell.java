@@ -71,6 +71,14 @@ class Cell {
     // how many chars would be discarded from input key in this way
     int skip = 0;
 
+    /**
+     * get the command identifier (use getCommandVal() if you want the value
+     * 
+     * @return the command identifier
+     */
+    public int getCommand() {
+    	return cmd;
+    }
 
     /**
      *  Constructor for the Cell object.
