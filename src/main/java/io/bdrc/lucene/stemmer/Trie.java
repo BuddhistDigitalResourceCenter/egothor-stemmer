@@ -335,7 +335,7 @@ public class Trie {
      * @param  index  the index containing the desired Row
      * @return        the Row
      */
-    private Row getRow(int index) {
+    public Row getRow(int index) {
         if (index < 0 || index >= rows.size()) {
             return null;
         }
