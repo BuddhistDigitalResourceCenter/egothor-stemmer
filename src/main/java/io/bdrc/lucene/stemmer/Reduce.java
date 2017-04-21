@@ -52,41 +52,32 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package io.bdrc.lucene.egothor.stemmer;
+package io.bdrc.lucene.stemmer;
 
 import java.util.*;
 
 /**
- *  The Lift class is adata structure that is a variation of a Patricia
- *  trie. Lift's <i>raison d'etre</i> is to implement reduction of the trie
- *  via the Lift-Up method., which makes the data structure less liable to
- *  overstemming.
+ *  The Reduce object is used to remove gaps in a Trie which stores a
+ *  dictionary..
  *  
  *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */
-public class Lift extends Reduce {
-    boolean changeSkip;
-
+public class Reduce {
 
     /**
-     *  Constructor for the Lift object.
-     *
-     * @param  changeSkip  when set to <tt>true</tt> , comparison of two
-     *      Cells takes a skip command into account
+     *  Constructor for the Reduce object.
      */
-    public Lift(boolean changeSkip) {
-        this.changeSkip = changeSkip;
-    }
+    public Reduce() { }
 
 
     /**
-     *  Optimize (eliminate rows with no content) the given Trie and return
-     *  the reduced Trie.
+     *  Optimize (remove holes in the rows) the given Trie and return the
+     *  restructured Trie.
      *
-     * @param  orig  the Trie to optimized
-     * @return       the reduced Trie
+     * @param  orig  the Trie to optimize
+     * @return       the restructured Trie
      */
     public Trie optimize(Trie orig) {
         Vector<String> cmds = orig.cmds;
@@ -94,55 +85,65 @@ public class Lift extends Reduce {
         Vector<Row> orows = orig.rows;
         int remap[] = new int[orows.size()];
 
-        for (int j = orows.size() - 1; j >= 0; j--) {
-            liftUp((Row) orows.elementAt(j), orows);
-        }
-
         Arrays.fill(remap, -1);
-        rows = removeGaps(orig.root, orows, new Vector<Row>(), remap);
+        rows = removeGaps(orig.root, orows, rows, remap);
 
         return new Trie(orig.forward, remap[orig.root], cmds, rows);
     }
 
 
     /**
-     *  Reduce the trie using Lift-Up reduction. The Lift-Up reduction
-     *  propagates all leaf-values (patch commands), where possible, to
-     *  higher levels which are closer to the root of the trie.
+     *  Description of the Method
      *
-     * @param  in     the Row to consider when optimizing
-     * @param  nodes  contains the patch commands
+     * @param  ind    Description of the Parameter
+     * @param  old    Description of the Parameter
+     * @param  to     Description of the Parameter
+     * @param  remap  Description of the Parameter
+     * @return        Description of the Return Value
      */
-    public void liftUp(Row in, Vector<Row> nodes) {
-        Iterator<Cell> i = in.cells.values().iterator();
+    Vector<Row> removeGaps(int ind, Vector<Row> old, Vector<Row> to, int remap[]) {
+        remap[ind] = to.size();
+
+        Row now = old.elementAt(ind);
+        to.addElement(now);
+        Iterator<Cell> i = now.cells.values().iterator();
         for (; i.hasNext(); ) {
             Cell c = i.next();
-            if (c.ref >= 0) {
-                Row to = nodes.elementAt(c.ref);
-                int sum = to.uniformCmd(changeSkip);
-                if (sum >= 0) {
-                    if (sum == c.cmd) {
-                        if (changeSkip) {
-                            if (c.skip != to.uniformSkip + 1) {
-                                continue;
-                            }
-                            c.skip = to.uniformSkip + 1;
-                        } else {
-                            c.skip = 0;
-                        }
-                        c.cnt += to.uniformCnt;
-                        c.ref = -1;
-                    } else if (c.cmd < 0) {
-                        c.cnt = to.uniformCnt;
-                        c.cmd = sum;
-                        c.ref = -1;
-                        if (changeSkip) {
-                            c.skip = to.uniformSkip + 1;
-                        } else {
-                            c.skip = 0;
-                        }
-                    }
+            if (c.ref >= 0 && remap[c.ref] < 0) {
+                removeGaps(c.ref, old, to, remap);
+            }
+        }
+        to.setElementAt(new Remap(now, remap), remap[ind]);
+        return to;
+    }
+
+
+    /**
+     *  This class is part of the Egothor Project
+     *
+     * @author    Leo Galambos
+     */
+    class Remap extends Row {
+        /**
+         *  Constructor for the Remap object
+         *
+         * @param  old    Description of the Parameter
+         * @param  remap  Description of the Parameter
+         */
+        public Remap(Row old, int remap[]) {
+            super();
+            Iterator<Character> i = old.cells.keySet().iterator();
+            for (; i.hasNext(); ) {
+                Character ch = i.next();
+                Cell c = old.at(ch);
+                Cell nc;
+                if (c.ref >= 0) {
+                    nc = new Cell(c);
+                    nc.ref = remap[nc.ref];
+                } else {
+                    nc = new Cell(c);
                 }
+                cells.put(ch, nc);
             }
         }
     }

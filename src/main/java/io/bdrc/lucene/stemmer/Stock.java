@@ -52,99 +52,68 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package io.bdrc.lucene.egothor.stemmer;
+package io.bdrc.lucene.stemmer;
 
-import java.util.*;
+import java.io.*;
 
 /**
- *  The Reduce object is used to remove gaps in a Trie which stores a
- *  dictionary..
+ *  The Stock object is a stemmer. It consists of a set of stems and a
+ *  stemming trie. The set of stems specifies the set of words that should
+ *  not be transformed to their base forms (the wrong word might result).
+ *  <p>
+ *
+ *  To save memory, the stem set can be destroyed and a simple strategy can
+ *  be used in its place. For example, only transform longer terms (5 or
+ *  more characters), and if the transformation generates a short stem
+ *  (under 4 characters), do not accept it and instead use the original
+ *  word rather than the very short stem that could be a mistake.
  *  
  *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */
-public class Reduce {
-
-    /**
-     *  Constructor for the Reduce object.
-     */
-    public Reduce() { }
+public class Stock {
+    Trie stemmer = null;
 
 
     /**
-     *  Optimize (remove holes in the rows) the given Trie and return the
-     *  restructured Trie.
-     *
-     * @param  orig  the Trie to optimize
-     * @return       the restructured Trie
+     *  Constructor for the Stock object. It constructs the default stemmer
+     *  that is loaded from a file that is specified by the system <code>default.stemmer</code>
+     *  property.
      */
-    public Trie optimize(Trie orig) {
-        Vector<String> cmds = orig.cmds;
-        Vector<Row> rows = new Vector<Row>();
-        Vector<Row> orows = orig.rows;
-        int remap[] = new int[orows.size()];
+    public Stock() {
+        String stemBin = System.getProperty("default.stemmer");
+        if (stemBin == null) {
+            return;
+        }
 
-        Arrays.fill(remap, -1);
-        rows = removeGaps(orig.root, orows, rows, remap);
-
-        return new Trie(orig.forward, remap[orig.root], cmds, rows);
+        try {
+            System.out.println("Default stemmer " + stemBin);
+            DataInputStream in = new DataInputStream(
+                    new BufferedInputStream(
+                    new FileInputStream(stemBin)));
+            String method = in.readUTF().toUpperCase();
+            if (method.indexOf('M') < 0) {
+                stemmer = new Trie(in);
+            } else {
+                stemmer = new MultiTrie2(in);
+            }
+            System.out.println("Default stemmer loaded.");
+            in.close();
+        } catch (IOException x) {
+            x.printStackTrace();
+            stemmer = null;
+        }
     }
 
 
     /**
-     *  Description of the Method
+     *  Return the Trie (stemmer) for the given language.
      *
-     * @param  ind    Description of the Parameter
-     * @param  old    Description of the Parameter
-     * @param  to     Description of the Parameter
-     * @param  remap  Description of the Parameter
-     * @return        Description of the Return Value
+     * @param  lang  the language for which a stemmer should be returned
+     * @return       a Trie (stemmer)
      */
-    Vector<Row> removeGaps(int ind, Vector<Row> old, Vector<Row> to, int remap[]) {
-        remap[ind] = to.size();
-
-        Row now = old.elementAt(ind);
-        to.addElement(now);
-        Iterator<Cell> i = now.cells.values().iterator();
-        for (; i.hasNext(); ) {
-            Cell c = i.next();
-            if (c.ref >= 0 && remap[c.ref] < 0) {
-                removeGaps(c.ref, old, to, remap);
-            }
-        }
-        to.setElementAt(new Remap(now, remap), remap[ind]);
-        return to;
-    }
-
-
-    /**
-     *  This class is part of the Egothor Project
-     *
-     * @author    Leo Galambos
-     */
-    class Remap extends Row {
-        /**
-         *  Constructor for the Remap object
-         *
-         * @param  old    Description of the Parameter
-         * @param  remap  Description of the Parameter
-         */
-        public Remap(Row old, int remap[]) {
-            super();
-            Iterator<Character> i = old.cells.keySet().iterator();
-            for (; i.hasNext(); ) {
-                Character ch = i.next();
-                Cell c = old.at(ch);
-                Cell nc;
-                if (c.ref >= 0) {
-                    nc = new Cell(c);
-                    nc.ref = remap[nc.ref];
-                } else {
-                    nc = new Cell(c);
-                }
-                cells.put(ch, nc);
-            }
-        }
+    public Trie getStemmer(java.util.Locale lang) {
+        return stemmer;
     }
 }

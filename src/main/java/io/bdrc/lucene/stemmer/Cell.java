@@ -52,43 +52,51 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package io.bdrc.lucene.egothor.stemmer;
+package io.bdrc.lucene.stemmer;
 
 /**
- *  The Optimizer class is a Trie that will be reduced (have empty rows
- *  removed). This is the result of allowing a joining of rows when there
- *  is no collision between non-<tt>null</tt> values in the rows.
- *  Information loss, resulting in the stemmer not being able to recognize
- *  words (as in Optimizer), is curtailed, allowing the stemmer to
- *  recognize words for which the original trie was built. Use of this
- *  class allows the stemmer to be self-teaching.
+ *  A Cell is a portion of a trie.
  *  
  *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */
-public class Optimizer2 extends Optimizer {
+class Cell {
+    // next row id in this way
+    int ref = -1;
+    // command of the cell
+    int cmd = -1;
+    // how many cmd-s was in subtrie before pack()
+    int cnt = 0;
+    // how many chars would be discarded from input key in this way
+    int skip = 0;
+
+
     /**
-     *  Constructor for the Optimizer2 object.
+     *  Constructor for the Cell object.
      */
-    public Optimizer2() { }
+    Cell() { }
 
 
     /**
-     *  Merge the given Cells and return the resulting Cell.
+     *  Construct a Cell using the properties of the given Cell.
      *
-     * @param  m  the master Cell
-     * @param  e  the existing Cell
-     * @return    the resulting Cell, or <tt>null</tt> if the operation
-     *      cannot be realized
+     * @param  a  the Cell whose properties will be used
      */
-    public Cell merge(Cell m, Cell e) {
-        if (m.cmd == e.cmd && m.ref == e.ref && m.skip == e.skip) {
-            Cell c = new Cell(m);
-            c.cnt += e.cnt;
-            return c;
-        } else {
-            return null;
-        }
+    Cell(Cell a) {
+        ref = a.ref;
+        cmd = a.cmd;
+        cnt = a.cnt;
+        skip = a.skip;
+    }
+
+
+    /**
+     *  Return a String containing this Cell's attributes.
+     *
+     * @return    a String representation of this Cell
+     */
+    public String toString() {
+        return "ref(" + ref + ")cmd(" + cmd + ")cnt(" + cnt + ")skp(" + skip + ")";
     }
 }

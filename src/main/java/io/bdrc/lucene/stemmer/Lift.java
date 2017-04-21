@@ -52,32 +52,41 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package io.bdrc.lucene.egothor.stemmer;
+package io.bdrc.lucene.stemmer;
 
 import java.util.*;
 
 /**
- *  The Optimizer class is a Trie that will be reduced (have empty rows
- *  removed). The reduction will be made by joining two rows where the
- *  first is a subset of the second.
+ *  The Lift class is adata structure that is a variation of a Patricia
+ *  trie. Lift's <i>raison d'etre</i> is to implement reduction of the trie
+ *  via the Lift-Up method., which makes the data structure less liable to
+ *  overstemming.
  *  
  *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */
-public class Optimizer extends Reduce {
-    /**
-     *  Constructor for the Optimizer object.
-     */
-    public Optimizer() { }
+public class Lift extends Reduce {
+    boolean changeSkip;
 
 
     /**
-     *  Optimize (remove empty rows) from the given Trie and return the
-     *  resulting Trie.
+     *  Constructor for the Lift object.
      *
-     * @param  orig  the Trie to consolidate
-     * @return       the newly consolidated Trie
+     * @param  changeSkip  when set to <tt>true</tt> , comparison of two
+     *      Cells takes a skip command into account
+     */
+    public Lift(boolean changeSkip) {
+        this.changeSkip = changeSkip;
+    }
+
+
+    /**
+     *  Optimize (eliminate rows with no content) the given Trie and return
+     *  the reduced Trie.
+     *
+     * @param  orig  the Trie to optimized
+     * @return       the reduced Trie
      */
     public Trie optimize(Trie orig) {
         Vector<String> cmds = orig.cmds;
@@ -86,115 +95,55 @@ public class Optimizer extends Reduce {
         int remap[] = new int[orows.size()];
 
         for (int j = orows.size() - 1; j >= 0; j--) {
-            Row now = new Remap((Row) orows.elementAt(j), remap);
-            boolean merged = false;
-
-            for (int i = 0; i < rows.size(); i++) {
-                Row q = merge(now, (Row) rows.elementAt(i));
-                if (q != null) {
-                    rows.setElementAt(q, i);
-                    merged = true;
-                    remap[j] = i;
-                    break;
-                }
-            }
-
-            if (merged == false) {
-                remap[j] = rows.size();
-                rows.addElement(now);
-            }
+            liftUp((Row) orows.elementAt(j), orows);
         }
 
-        int root = remap[orig.root];
         Arrays.fill(remap, -1);
-        rows = removeGaps(root, rows, new Vector<Row>(), remap);
+        rows = removeGaps(orig.root, orows, new Vector<Row>(), remap);
 
-        return new Trie(orig.forward, remap[root], cmds, rows);
+        return new Trie(orig.forward, remap[orig.root], cmds, rows);
     }
 
 
     /**
-     *  Merge the given rows and return the resulting Row.
+     *  Reduce the trie using Lift-Up reduction. The Lift-Up reduction
+     *  propagates all leaf-values (patch commands), where possible, to
+     *  higher levels which are closer to the root of the trie.
      *
-     * @param  master    the master Row
-     * @param  existing  the existing Row
-     * @return           the resulting Row, or <tt>null</tt> if the
-     *      operation cannot be realized
+     * @param  in     the Row to consider when optimizing
+     * @param  nodes  contains the patch commands
      */
-    public Row merge(Row master, Row existing) {
-        Iterator<Character> i = master.cells.keySet().iterator();
-        Row n = new Row();
+    public void liftUp(Row in, Vector<Row> nodes) {
+        Iterator<Cell> i = in.cells.values().iterator();
         for (; i.hasNext(); ) {
-            Character ch = i.next();
-            // XXX also must handle Cnt and Skip !!
-            Cell a = (Cell) master.cells.get(ch);
-            Cell b = (Cell) existing.cells.get(ch);
-
-            Cell s = (b == null) ? new Cell(a) : merge(a, b);
-            if (s == null) {
-                return null;
-            }
-            n.cells.put(ch, s);
-        }
-        i = existing.cells.keySet().iterator();
-        for (; i.hasNext(); ) {
-            Character ch = (Character) i.next();
-            if (master.at(ch) != null) {
-                continue;
-            }
-            n.cells.put(ch, existing.at(ch));
-        }
-        return n;
-    }
-
-
-    /**
-     *  Merge the given Cells and return the resulting Cell.
-     *
-     * @param  m  the master Cell
-     * @param  e  the existing Cell
-     * @return    the resulting Cell, or <tt>null</tt> if the operation
-     *      cannot be realized
-     */
-    public Cell merge(Cell m, Cell e) {
-        Cell n = new Cell();
-
-        if (m.skip != e.skip) {
-            return null;
-        }
-
-        if (m.cmd >= 0) {
-            if (e.cmd >= 0) {
-                if (m.cmd == e.cmd) {
-                    n.cmd = m.cmd;
-                } else {
-                    return null;
-                }
-            } else {
-                n.cmd = m.cmd;
-            }
-        } else {
-            n.cmd = e.cmd;
-        }
-        if (m.ref >= 0) {
-            if (e.ref >= 0) {
-                if (m.ref == e.ref) {
-                    if (m.skip == e.skip) {
-                        n.ref = m.ref;
-                    } else {
-                        return null;
+            Cell c = i.next();
+            if (c.ref >= 0) {
+                Row to = nodes.elementAt(c.ref);
+                int sum = to.uniformCmd(changeSkip);
+                if (sum >= 0) {
+                    if (sum == c.cmd) {
+                        if (changeSkip) {
+                            if (c.skip != to.uniformSkip + 1) {
+                                continue;
+                            }
+                            c.skip = to.uniformSkip + 1;
+                        } else {
+                            c.skip = 0;
+                        }
+                        c.cnt += to.uniformCnt;
+                        c.ref = -1;
+                    } else if (c.cmd < 0) {
+                        c.cnt = to.uniformCnt;
+                        c.cmd = sum;
+                        c.ref = -1;
+                        if (changeSkip) {
+                            c.skip = to.uniformSkip + 1;
+                        } else {
+                            c.skip = 0;
+                        }
                     }
-                } else {
-                    return null;
                 }
-            } else {
-                n.ref = m.ref;
             }
-        } else {
-            n.ref = e.ref;
         }
-        n.cnt = m.cnt + e.cnt;
-        n.skip = m.skip;
-        return n;
     }
 }

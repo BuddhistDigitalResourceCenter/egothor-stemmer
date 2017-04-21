@@ -52,68 +52,43 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package io.bdrc.lucene.egothor.stemmer;
-
-import java.io.*;
+package io.bdrc.lucene.stemmer;
 
 /**
- *  The Stock object is a stemmer. It consists of a set of stems and a
- *  stemming trie. The set of stems specifies the set of words that should
- *  not be transformed to their base forms (the wrong word might result).
- *  <p>
- *
- *  To save memory, the stem set can be destroyed and a simple strategy can
- *  be used in its place. For example, only transform longer terms (5 or
- *  more characters), and if the transformation generates a short stem
- *  (under 4 characters), do not accept it and instead use the original
- *  word rather than the very short stem that could be a mistake.
+ *  The Optimizer class is a Trie that will be reduced (have empty rows
+ *  removed). This is the result of allowing a joining of rows when there
+ *  is no collision between non-<tt>null</tt> values in the rows.
+ *  Information loss, resulting in the stemmer not being able to recognize
+ *  words (as in Optimizer), is curtailed, allowing the stemmer to
+ *  recognize words for which the original trie was built. Use of this
+ *  class allows the stemmer to be self-teaching.
  *  
  *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
  * @author    Leo Galambos
  */
-public class Stock {
-    Trie stemmer = null;
-
-
+public class Optimizer2 extends Optimizer {
     /**
-     *  Constructor for the Stock object. It constructs the default stemmer
-     *  that is loaded from a file that is specified by the system <code>default.stemmer</code>
-     *  property.
+     *  Constructor for the Optimizer2 object.
      */
-    public Stock() {
-        String stemBin = System.getProperty("default.stemmer");
-        if (stemBin == null) {
-            return;
-        }
-
-        try {
-            System.out.println("Default stemmer " + stemBin);
-            DataInputStream in = new DataInputStream(
-                    new BufferedInputStream(
-                    new FileInputStream(stemBin)));
-            String method = in.readUTF().toUpperCase();
-            if (method.indexOf('M') < 0) {
-                stemmer = new Trie(in);
-            } else {
-                stemmer = new MultiTrie2(in);
-            }
-            System.out.println("Default stemmer loaded.");
-            in.close();
-        } catch (IOException x) {
-            x.printStackTrace();
-            stemmer = null;
-        }
-    }
+    public Optimizer2() { }
 
 
     /**
-     *  Return the Trie (stemmer) for the given language.
+     *  Merge the given Cells and return the resulting Cell.
      *
-     * @param  lang  the language for which a stemmer should be returned
-     * @return       a Trie (stemmer)
+     * @param  m  the master Cell
+     * @param  e  the existing Cell
+     * @return    the resulting Cell, or <tt>null</tt> if the operation
+     *      cannot be realized
      */
-    public Trie getStemmer(java.util.Locale lang) {
-        return stemmer;
+    public Cell merge(Cell m, Cell e) {
+        if (m.cmd == e.cmd && m.ref == e.ref && m.skip == e.skip) {
+            Cell c = new Cell(m);
+            c.cnt += e.cnt;
+            return c;
+        } else {
+            return null;
+        }
     }
 }

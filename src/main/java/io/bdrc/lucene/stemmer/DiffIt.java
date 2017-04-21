@@ -52,7 +52,7 @@
    individuals  on  behalf  of  the  Egothor  Project  and was originally
    created by Leo Galambos (Leo.G@seznam.cz).
  */
-package io.bdrc.lucene.egothor.stemmer;
+package io.bdrc.lucene.stemmer;
 
 import java.io.*;
 import java.nio.file.Files;
