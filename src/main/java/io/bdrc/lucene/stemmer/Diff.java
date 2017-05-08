@@ -103,67 +103,58 @@ public class Diff {
         NOOP = noop;
     }
 
-
     /**
-     *  Apply the given patch string <tt>diff</tt> to the given string <tt>
-     *  orig </tt> and return the new String with the patch command
-     *  executed..
-     *
-     * @param  orig  java.lang.StringBuffer Original string
-     * @param  diff  java.lang.String Patch string
-     * @return       java.lang.StringBuffer New string
+     * Apply the given patch string <tt>diff</tt> to the given string <tt>
+     * dest</tt>.
+     * 
+     * @param dest Destination string
+     * @param diff Patch string
      */
-    public static StringBuffer apply(StringBuffer orig, String diff) {
-    	if (orig == null) return null;
-    	
-        StringBuffer _orig = new StringBuffer(orig.toString());
-
-        try {
-
-            if (diff == null) {
-                return _orig;
-            }
-            int pos = _orig.length() - 1;
-            if (pos < 0) {
-                return orig;
-            }
-            // orig == ""
-            for (int i = 0; i < diff.length() / 2; i++) {
-                char cmd = diff.charAt(2 * i);
-                char param = diff.charAt(2 * i + 1);
-                int par_num = (param - 'a' + 1);
-                switch (cmd) {
-                    case '-':
-                        pos = pos - par_num + 1;
-                        break;
-                    case 'R':
-                        _orig.setCharAt(pos, param);
-                        break;
-                    case 'D':
-                        int o = pos;
-                        pos -= par_num - 1;
-                        /*
-                         *  delete par_num chars from index pos
-                         */
-                        //		    String s = orig.toString();
-                        //s = s.substring( 0, pos ) + s.substring( o + 1 );
-                        //orig = new StringBuffer( s );
-                        _orig = _orig.delete(pos, o + 1);
-
-                        break;
-                    case 'I':
-                        _orig.insert(pos += 1, param);
-                        break;
-                }
-                pos--;
-            }
-            return _orig;
-        } catch (StringIndexOutOfBoundsException x) {
-//	    x.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException x) {
-//	    x.printStackTrace();
+    public static void apply(StringBuilder dest, CharSequence diff) {
+      try {
+        
+        if (diff == null) {
+          return;
         }
-        return orig;
+
+        int pos = dest.length() - 1;
+        if (pos < 0) {
+          return;
+        }
+        // orig == ""
+        for (int i = 0; i < diff.length() / 2; i++) {
+          char cmd = diff.charAt(2 * i);
+          char param = diff.charAt(2 * i + 1);
+          int par_num = (param - 'a' + 1);
+          switch (cmd) {
+            case '-':
+              pos = pos - par_num + 1;
+              break;
+            case 'R':
+              dest.setCharAt(pos, param);
+              break;
+            case 'D':
+              int o = pos;
+              pos -= par_num - 1;
+              /*
+               * delete par_num chars from index pos
+               */
+              // String s = orig.toString();
+              // s = s.substring( 0, pos ) + s.substring( o + 1 );
+              // orig = new StringBuffer( s );
+              dest.delete(pos, o + 1);        
+              break;
+            case 'I':
+              dest.insert(pos += 1, param);
+              break;
+          }
+          pos--;
+        }
+      } catch (StringIndexOutOfBoundsException x) {
+        // x.printStackTrace();
+      } catch (ArrayIndexOutOfBoundsException x) {
+        // x.printStackTrace();
+      }
     }
 
 

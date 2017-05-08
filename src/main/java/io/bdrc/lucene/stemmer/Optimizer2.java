@@ -84,9 +84,9 @@ public class Optimizer2 extends Optimizer {
      * @return    the resulting Cell, or <tt>null</tt> if the operation
      *      cannot be realized
      */
-    public Cell merge(Cell m, Cell e) {
+    public Cell merge(final Cell m, final Cell e) {
         if (m.cmd == e.cmd && m.ref == e.ref && m.skip == e.skip) {
-            Cell c = new Cell(m);
+            final Cell c = new Cell(m);
             c.cnt += e.cnt;
             return c;
         } else {

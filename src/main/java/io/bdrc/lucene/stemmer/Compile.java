@@ -177,11 +177,6 @@ public class Compile {
                     trie.printInfo(prefix + " ");
                 }
 
-                System.out.print("Full: ");
-                testTrie(trie, args[i], true, storeorig);
-                System.out.print("Last: ");
-                testTrie(trie, args[i], false, storeorig);
-
                 DataOutputStream os = new DataOutputStream(
                         new BufferedOutputStream(
                         Files.newOutputStream(Paths.get(args[i] + ".out"))));
@@ -209,63 +204,4 @@ public class Compile {
         }
     }
 
-
-    /**
-     *  A unit test for JUnit
-     *
-     * @param  trie       Description of the Parameter
-     * @param  file       Description of the Parameter
-     * @param  usefull    Description of the Parameter
-     * @param  storeorig  Description of the Parameter
-     */
-    static void testTrie(Trie trie, String file, boolean usefull, boolean storeorig) {
-    	LineNumberReader in = null;
-        try {
-            in = new LineNumberReader(
-                    new BufferedReader(new FileReader(file)));
-            int words = 0;
-            int nobug = 0;
-
-            for (String line = in.readLine(); line != null; line = in.readLine()) {
-                try {
-                    line = line.toLowerCase();
-                    StringTokenizer st = new StringTokenizer(line);
-                    String stem = st.nextToken();
-                    if (storeorig) {
-                        words++;
-                        String cmd = (usefull) ? trie.getFully(stem) : trie.getLastOnPath(stem);
-                        String stm = Diff.apply(new StringBuffer(stem), cmd).toString();
-                        if (stm.equalsIgnoreCase(stem)) {
-                            nobug++;
-                        }
-                    }
-                    while (st.hasMoreTokens()) {
-                        String token = st.nextToken();
-                        if (token.equals(stem)) {
-                            continue;
-                        }
-                        words++;
-                        String cmd = (usefull) ? trie.getFully(token) : trie.getLastOnPath(token);
-                        String stm = Diff.apply(new StringBuffer(token), cmd).toString();
-                        if (stm.equalsIgnoreCase(stem)) {
-                            nobug++;
-                        }
-                    }
-                } catch (java.util.NoSuchElementException x) {
-                    // no base token (stem) on a line
-                }
-            }
-            System.out.println("tests " + words + " succ " + nobug);
-        } catch (FileNotFoundException x) {
-            x.printStackTrace();
-        } catch (IOException x) {
-            x.printStackTrace();
-        } finally {
-        	try {
-				in.close();
-			} catch (IOException x) {
-				x.printStackTrace();
-			}
-        }
-    }
 }

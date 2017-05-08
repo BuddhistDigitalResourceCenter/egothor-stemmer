@@ -151,16 +151,16 @@ public class Trie {
      * @param  key  Description of the Parameter
      * @return      The all value
      */
-    public String[] getAll(String key) {
-        int res[] = new int[key.length()];
+    public String[] getAll(final String key) {
+        final int res[] = new int[key.length()];
         int resc = 0;
         Row now = getRow(root);
         int w;
-        StrEnum e = new StrEnum(key, forward);
+        final StrEnum e = new StrEnum(key, forward);
         boolean br = false;
 
         for (int i = 0; i < key.length() - 1; i++) {
-            Character ch = new Character(e.next());
+            final Character ch = new Character(e.next());
             w = now.getCmd(ch);
             if (w >= 0) {
                 int n = w;
@@ -216,7 +216,7 @@ public class Trie {
      */
     public int getCells() {
         int size = 0;
-        Enumeration<Row> e = rows.elements();
+        final Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
             size += (e.nextElement()).getCells();
         }
@@ -231,7 +231,7 @@ public class Trie {
      */
     public int getCellsPnt() {
         int size = 0;
-        Enumeration<Row> e = rows.elements();
+        final Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
             size += (e.nextElement()).getCellsPnt();
         }
@@ -246,7 +246,7 @@ public class Trie {
      */
     public int getCellsVal() {
         int size = 0;
-        Enumeration<Row> e = rows.elements();
+        final Enumeration<Row> e = rows.elements();
         while (e.hasMoreElements()) {
             size += (e.nextElement()).getCellsVal();
         }
@@ -261,12 +261,12 @@ public class Trie {
      * @param  key  the key
      * @return      the associated element
      */
-    public String getFully(String key) {
+    public String getFully(final String key) {
         Row now = getRow(root);
         int w;
         Cell c;
         int cmd = -1;
-        StrEnum e = new StrEnum(key, forward);
+        final StrEnum e = new StrEnum(key, forward);
         Character ch = null;
 
         for (int i = 0; i < key.length(); ) {
@@ -335,7 +335,7 @@ public class Trie {
      * @param  index  the index containing the desired Row
      * @return        the Row
      */
-    public Row getRow(int index) {
+    public Row getRow(final int index) {
         if (index < 0 || index >= rows.size()) {
             return null;
         }

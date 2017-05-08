@@ -82,17 +82,17 @@ public class Optimizer extends Reduce {
      * @return       the newly consolidated Trie
      */
     public Trie optimize(Trie orig) {
-        Vector<String> cmds = orig.cmds;
+        final Vector<String> cmds = orig.cmds;
         Vector<Row> rows = new Vector<Row>();
-        Vector<Row> orows = orig.rows;
-        int remap[] = new int[orows.size()];
+        final Vector<Row> orows = orig.rows;
+        final int remap[] = new int[orows.size()];
 
         for (int j = orows.size() - 1; j >= 0; j--) {
-            Row now = new Remap((Row) orows.elementAt(j), remap);
+            final Row now = new Remap(orows.elementAt(j), remap);
             boolean merged = false;
 
             for (int i = 0; i < rows.size(); i++) {
-                Row q = merge(now, (Row) rows.elementAt(i));
+                final Row q = merge(now, rows.elementAt(i));
                 if (q != null) {
                     rows.setElementAt(q, i);
                     merged = true;
@@ -125,14 +125,14 @@ public class Optimizer extends Reduce {
      */
     public Row merge(Row master, Row existing) {
         Iterator<Character> i = master.cells.keySet().iterator();
-        Row n = new Row();
+        final Row n = new Row();
         for (; i.hasNext(); ) {
-            Character ch = i.next();
+            final Character ch = i.next();
             // XXX also must handle Cnt and Skip !!
-            Cell a = (Cell) master.cells.get(ch);
-            Cell b = (Cell) existing.cells.get(ch);
+            final Cell a = master.cells.get(ch);
+            final Cell b = existing.cells.get(ch);
 
-            Cell s = (b == null) ? new Cell(a) : merge(a, b);
+            final Cell s = (b == null) ? new Cell(a) : merge(a, b);
             if (s == null) {
                 return null;
             }
@@ -140,7 +140,7 @@ public class Optimizer extends Reduce {
         }
         i = existing.cells.keySet().iterator();
         for (; i.hasNext(); ) {
-            Character ch = (Character) i.next();
+            final Character ch = i.next();
             if (master.at(ch) != null) {
                 continue;
             }
@@ -158,8 +158,8 @@ public class Optimizer extends Reduce {
      * @return    the resulting Cell, or <tt>null</tt> if the operation
      *      cannot be realized
      */
-    public Cell merge(Cell m, Cell e) {
-        Cell n = new Cell();
+    public Cell merge(final Cell m, final Cell e) {
+        final Cell n = new Cell();
 
         if (m.skip != e.skip) {
             return null;

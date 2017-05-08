@@ -81,8 +81,8 @@ public class Row {
      */
     public Row(DataInput is) throws IOException {
         for (int i = is.readInt(); i > 0; i--) {
-            Character ch = new Character(is.readChar());
-            Cell c = new Cell();
+            final Character ch = new Character(is.readChar());
+            final Cell c = new Cell();
             c.cmd = is.readInt();
             c.cnt = is.readInt();
             c.ref = is.readInt();
@@ -153,11 +153,11 @@ public class Row {
      * @return    the number of cells in use
      */
     public int getCells() {
-        Iterator<Character> i = cells.keySet().iterator();
+        final Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
-            Character c = i.next();
-            Cell e = at(c);
+            final Character c = i.next();
+            final Cell e = at(c);
             if (e.cmd >= 0 || e.ref >= 0) {
                 size++;
             }
@@ -173,11 +173,11 @@ public class Row {
      * @return    the number of references
      */
     public int getCellsPnt() {
-        Iterator<Character> i = cells.keySet().iterator();
+        final Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
-            Character c = i.next();
-            Cell e = at(c);
+            final Character c = i.next();
+            final Cell e = at(c);
             if (e.ref >= 0) {
                 size++;
             }
@@ -192,11 +192,11 @@ public class Row {
      * @return    the number of patch commands
      */
     public int getCellsVal() {
-        Iterator<Character> i = cells.keySet().iterator();
+        final Iterator<Character> i = cells.keySet().iterator();
         int size = 0;
         for (; i.hasNext(); ) {
-            Character c = i.next();
-            Cell e = at(c);
+            final Character c = i.next();
+            final Cell e = at(c);
             if (e.cmd >= 0) {
                 size++;
             }
@@ -212,8 +212,8 @@ public class Row {
      *      desired command
      * @return      the command
      */
-    public int getCmd(Character way) {
-        Cell c = at(way);
+    public int getCmd(final Character way) {
+        final Cell c = at(way);
         return (c == null) ? -1 : c.cmd;
     }
 
@@ -226,8 +226,8 @@ public class Row {
      * @param  way  the Character associated with the desired Cell
      * @return      the number of patch commands before reduction
      */
-    public int getCnt(Character way) {
-        Cell c = at(way);
+    public int getCnt(final Character way) {
+        final Cell c = at(way);
         return (c == null) ? -1 : c.cnt;
     }
 
@@ -239,8 +239,8 @@ public class Row {
      * @param  way  the Character associated with the desired Cell
      * @return      the reference, or -1 if the Cell is <tt>null,</tt>
      */
-    public int getRef(Character way) {
-        Cell c = at(way);
+    public int getRef(final Character way) {
+        final Cell c = at(way);
         return (c == null) ? -1 : c.ref;
     }
 
@@ -279,13 +279,13 @@ public class Row {
      * @return         the number of identical Cells, or -1 if there are
      *      (at least) two different cells
      */
-    public int uniformCmd(boolean eqSkip) {
-        Iterator<Cell> i = cells.values().iterator();
+    public int uniformCmd(final boolean eqSkip) {
+        final Iterator<Cell> i = cells.values().iterator();
         int ret = -1;
         uniformCnt = 1;
         uniformSkip = 0;
         for (; i.hasNext(); ) {
-            Cell c = i.next();
+            final Cell c = i.next();
             if (c.ref >= 0) {
                 return -1;
             }

@@ -82,10 +82,10 @@ public class Reduce {
      * @return       the restructured Trie
      */
     public Trie optimize(Trie orig) {
-        Vector<String> cmds = orig.cmds;
+        final Vector<String> cmds = orig.cmds;
         Vector<Row> rows = new Vector<Row>();
-        Vector<Row> orows = orig.rows;
-        int remap[] = new int[orows.size()];
+        final Vector<Row> orows = orig.rows;
+        final int remap[] = new int[orows.size()];
 
         Arrays.fill(remap, -1);
         rows = removeGaps(orig.root, orows, rows, remap);
@@ -106,11 +106,11 @@ public class Reduce {
     Vector<Row> removeGaps(int ind, Vector<Row> old, Vector<Row> to, int remap[]) {
         remap[ind] = to.size();
 
-        Row now = old.elementAt(ind);
+        final Row now = old.elementAt(ind);
         to.addElement(now);
-        Iterator<Cell> i = now.cells.values().iterator();
+        final Iterator<Cell> i = now.cells.values().iterator();
         for (; i.hasNext(); ) {
-            Cell c = i.next();
+            final Cell c = i.next();
             if (c.ref >= 0 && remap[c.ref] < 0) {
                 removeGaps(c.ref, old, to, remap);
             }
@@ -134,11 +134,11 @@ public class Reduce {
          */
         public Remap(Row old, int remap[]) {
             super();
-            Iterator<Character> i = old.cells.keySet().iterator();
+            final Iterator<Character> i = old.cells.keySet().iterator();
             for (; i.hasNext(); ) {
-                Character ch = i.next();
-                Cell c = old.at(ch);
-                Cell nc;
+                final Character ch = i.next();
+                final Cell c = old.at(ch);
+                final Cell nc;
                 if (c.ref >= 0) {
                     nc = new Cell(c);
                     nc.ref = remap[nc.ref];
