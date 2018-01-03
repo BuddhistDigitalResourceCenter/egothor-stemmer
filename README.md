@@ -1,6 +1,6 @@
-# Egothor Trie
+# Stemmer Trie
 
-This repository contains the code of `org.egothor.stemmer` slightly modified and renamed `io.bdrc.egothor.stemmer`. 
+This repository contains the code of `org.egothor.stemmer` slightly modified and renamed `io.bdrc.lucene.stemmer`. 
 
 The main goal of this repository is
 - easy Maven distribution (distribution on Sonatype ossrh)
