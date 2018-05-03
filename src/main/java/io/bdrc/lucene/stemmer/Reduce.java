@@ -56,6 +56,9 @@
 
 package io.bdrc.lucene.stemmer;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -68,31 +71,80 @@ import java.util.*;
  */
 public class Reduce {
 
+	public MessageDigest md;
+	
     /**
      *  Constructor for the Reduce object.
      */
-    public Reduce() { }
-
-
-    /**
-     *  Optimize (remove holes in the rows) the given Trie and return the
-     *  restructured Trie.
-     *
-     * @param  orig  the Trie to optimize
-     * @return       the restructured Trie
-     */
-    public Trie optimize(Trie orig) {
-        final Vector<String> cmds = orig.cmds;
-        Vector<Row> rows = new Vector<Row>();
-        final Vector<Row> orows = orig.rows;
-        final int remap[] = new int[orows.size()];
-
-        Arrays.fill(remap, -1);
-        rows = removeGaps(orig.root, orows, rows, remap);
-
-        return new Trie(orig.forward, remap[orig.root], cmds, rows);
+    public Reduce() {
+    	 try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
     }
 
+    public Trie optimize(Trie orig) {
+    	final Map<Integer,Integer> rowIdMappings = new HashMap<>();
+    	Map<BigInteger,Integer> rowMdMappings = new HashMap<>();
+        
+    	int nbChanges = fillMappings(orig, orig.root, rowIdMappings, rowMdMappings);
+    	
+    	if (nbChanges == 0) {
+    		System.out.println("no changes");
+    		return orig;
+    	}
+    	
+    	rowMdMappings = null; // gc
+    	
+    	// we now have a mapping but that contains holes, for instance:
+    	// if we have mappings 1 -> 3 and 2 -> 3, we have nothing in the rows at index 1 and 2
+    	// se we build a second mapping mapping these new indexes to a compact index
+    	int curCompactId = 0;
+    	final Map<Integer,Integer> compactMapping = new HashMap<>();
+    	for (int origRowId = 0 ; origRowId < orig.rows.size() ; origRowId ++) {
+    		if (compactMapping.containsKey(origRowId))
+    			continue;
+    		compactMapping.put(origRowId, curCompactId);
+    		curCompactId += 1;
+    	}
+    	final Vector<Row> newRows = new Vector<Row>(curCompactId);
+    	for (int i = 0 ; i < orig.rows.size() ; i++) {
+    		if (rowIdMappings.containsKey(i))
+    			continue;
+    		final Row newRow = new Remap(orig.getRow(i), compactMapping);
+    		newRows.setElementAt(newRow, compactMapping.get(i));
+    	}
+    	
+        return new Trie(orig.forward, compactMapping.get(orig.root), orig.cmds, newRows);
+    }
+
+    BigInteger updateRowAndGetMd(final Row r, final Map<Integer,Integer> rowIdMappings) {
+    	final String rowStrWithMappings = r.updateAndGetString(rowIdMappings);
+    	final byte[] hashBytes = md.digest(rowStrWithMappings.getBytes());
+        return new BigInteger(1,hashBytes);
+    }
+    
+    int fillMappings(final Trie orig, final int rowId, final Map<Integer,Integer> rowIdMappings, final Map<BigInteger, Integer> rowMDMappings) {
+    	int nbChanges = 0;
+    	final Row r = orig.getRow(rowId);
+    	final Iterator<Cell> i = r.cells.values().iterator();
+        for (; i.hasNext(); ) {
+            final Cell c = i.next();
+            if (c.ref >= 0 && !rowIdMappings.containsKey(c.ref)) {
+                nbChanges += fillMappings(orig, c.ref, rowIdMappings, rowMDMappings);
+            }
+        }
+        final BigInteger rowMd = updateRowAndGetMd(r, rowIdMappings);
+        if (!rowMDMappings.containsKey(rowMd)) {
+        	rowMDMappings.put(rowMd, rowId);
+        } else {
+        	rowIdMappings.put(rowId, rowMDMappings.get(rowMd));
+        	nbChanges += 1;
+        }
+        return nbChanges;
+    }
+    
 
     /**
      *  Description of the Method
@@ -132,12 +184,6 @@ public class Reduce {
      * @author    Leo Galambos
      */
     class Remap extends Row {
-        /**
-         *  Constructor for the Remap object
-         *
-         * @param  old    Description of the Parameter
-         * @param  remap  Description of the Parameter
-         */
         public Remap(Row old, int remap[]) {
             super();
             final Iterator<Character> i = old.cells.keySet().iterator();
@@ -148,6 +194,23 @@ public class Reduce {
                 if (c.ref >= 0) {
                     nc = new Cell(c);
                     nc.ref = remap[nc.ref];
+                } else {
+                    nc = new Cell(c);
+                }
+                cells.put(ch, nc);
+            }
+        }
+
+        public Remap(Row old, final Map<Integer,Integer> compactMappings) {
+            super();
+            final Iterator<Character> i = old.cells.keySet().iterator();
+            for (; i.hasNext(); ) {
+                final Character ch = i.next();
+                final Cell c = old.at(ch);
+                final Cell nc;
+                if (c.ref >= 0) {
+                    nc = new Cell(c);
+                    nc.ref = compactMappings.get(nc.ref);
                 } else {
                     nc = new Cell(c);
                 }

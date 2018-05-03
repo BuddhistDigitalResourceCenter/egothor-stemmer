@@ -56,6 +56,8 @@
 
 package io.bdrc.lucene.stemmer;
 
+import java.util.Map;
+
 /**
  *  A Cell is a portion of a trie.
  *  
@@ -102,5 +104,12 @@ class Cell {
      */
     public String toString() {
         return ref+"|"+cmd;
+    }
+    
+    public String updateAndGetString(Map<Integer,Integer> rowIdMappings) {
+    	Integer newId = rowIdMappings.get(ref);
+    	if (newId != null)
+    		ref = newId;
+		return ref+"|"+cmd;
     }
 }

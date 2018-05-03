@@ -223,7 +223,6 @@ public class Row {
             if (e.cmd < 0 && e.ref < 0) {
                 continue;
             }
-
             os.writeChar(c.charValue());
             os.writeInt(e.cmd);
             os.writeInt(e.ref);
@@ -238,11 +237,20 @@ public class Row {
         for (Iterator<Character> i = cells.keySet().iterator(); i.hasNext(); ) {
             Character ch = i.next();
             Cell c = at(ch);
-            res += "[" + ch + ":" + c + "]";
+            res += "[" + ch + ":" + c.toString() + "]";
         }
         return res;
     }
 
+    public String updateAndGetString(Map<Integer,Integer> rowIdMappings) {
+    	String res = "";
+        for (Iterator<Character> i = cells.keySet().iterator(); i.hasNext(); ) {
+            Character ch = i.next();
+            Cell c = at(ch);
+            res += "[" + ch + ":" + c.updateAndGetString(rowIdMappings) + "]";
+        }
+        return res;
+    }
 
     /**
      *  Description of the Method
