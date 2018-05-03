@@ -240,21 +240,6 @@ public class Trie {
 
 
     /**
-     *  Gets the cellsVal attribute of the Trie object
-     *
-     * @return    The cellsVal value
-     */
-    public int getCellsVal() {
-        int size = 0;
-        final Enumeration<Row> e = rows.elements();
-        while (e.hasMoreElements()) {
-            size += (e.nextElement()).getCellsVal();
-        }
-        return size;
-    }
-
-
-    /**
      *  Return the element that is stored in a cell associated with the
      *  given key.
      *
@@ -279,13 +264,6 @@ public class Trie {
             }
 
             cmd = c.cmd;
-
-            for (int skip = c.skip; skip > 0; skip--) {
-                if (i >= key.length()) {
-                    return null;
-                }
-                i++;
-            }
 
             w = now.getRef(ch);
             if (w >= 0) {
@@ -419,26 +397,12 @@ public class Trie {
         return by.optimize(this);
     }
 
-
-    /**
-     *  Description of the Method
-     *
-     * @param  prefix  Description of the Parameter
-     */
-    public void printInfo(String prefix) {
-        System.out.println(prefix + "nds " + rows.size() + " cmds " +
-                cmds.size() + " cells " + getCells() +
-                " valcells " + getCellsVal() +
-                " pntcells " + getCellsPnt());
-    }
-
     /**
      *  Description of the Method
      */
     public String toString() {
         return "nds " + rows.size() + " cmds " +
                 cmds.size() + " cells " + getCells() +
-                " valcells " + getCellsVal() +
                 " pntcells " + getCellsPnt();
     }
 

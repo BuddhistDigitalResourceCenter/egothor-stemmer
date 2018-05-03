@@ -84,9 +84,7 @@ public class Row {
             final Character ch = new Character(is.readChar());
             final Cell c = new Cell();
             c.cmd = is.readInt();
-            c.cnt = is.readInt();
             c.ref = is.readInt();
-            c.skip = is.readInt();
             cells.put(ch, c);
         }
     }
@@ -124,7 +122,6 @@ public class Row {
         } else {
             c.cmd = cmd;
         }
-        c.cnt = (cmd >= 0) ? 1 : 0;
     }
 
 
@@ -185,26 +182,6 @@ public class Row {
         return size;
     }
 
-
-    /**
-     *  Return the number of patch commands saved in this Row.
-     *
-     * @return    the number of patch commands
-     */
-    public int getCellsVal() {
-        final Iterator<Character> i = cells.keySet().iterator();
-        int size = 0;
-        for (; i.hasNext(); ) {
-            final Character c = i.next();
-            final Cell e = at(c);
-            if (e.cmd >= 0) {
-                size++;
-            }
-        }
-        return size;
-    }
-
-
     /**
      *  Return the command in the Cell associated with the given Character.
      *
@@ -215,20 +192,6 @@ public class Row {
     public int getCmd(final Character way) {
         final Cell c = at(way);
         return (c == null) ? -1 : c.cmd;
-    }
-
-
-    /**
-     *  Return the number of patch commands were in the Cell associated
-     *  with the given Character before the Trie containing this Row was
-     *  reduced.
-     *
-     * @param  way  the Character associated with the desired Cell
-     * @return      the number of patch commands before reduction
-     */
-    public int getCnt(final Character way) {
-        final Cell c = at(way);
-        return (c == null) ? -1 : c.cnt;
     }
 
 
@@ -263,65 +226,8 @@ public class Row {
 
             os.writeChar(c.charValue());
             os.writeInt(e.cmd);
-            os.writeInt(e.cnt);
             os.writeInt(e.ref);
-            os.writeInt(e.skip);
         }
-    }
-
-
-    /**
-     *  Return the number of identical Cells (containing patch commands) in
-     *  this Row.
-     *
-     * @param  eqSkip  when set to <tt>false</tt> the removed patch
-     *      commands are considered
-     * @return         the number of identical Cells, or -1 if there are
-     *      (at least) two different cells
-     */
-    public int uniformCmd(final boolean eqSkip) {
-        final Iterator<Cell> i = cells.values().iterator();
-        int ret = -1;
-        uniformCnt = 1;
-        uniformSkip = 0;
-        for (; i.hasNext(); ) {
-            final Cell c = i.next();
-            if (c.ref >= 0) {
-                return -1;
-            }
-            if (c.cmd >= 0) {
-                if (ret < 0) {
-                    ret = c.cmd;
-                    uniformSkip = c.skip;
-                } else if (ret == c.cmd) {
-                    if (eqSkip) {
-                        if (uniformSkip == c.skip) {
-                            uniformCnt++;
-                        } else {
-                            return -1;
-                        }
-                    } else {
-                        uniformCnt++;
-                    }
-                } else {
-                    return -1;
-                }
-            }
-        }
-        return ret;
-    }
-
-
-    /**
-     *  Write the contents of this Row to stdout.
-     */
-    public void print() {
-        for (Iterator<Character> i = cells.keySet().iterator(); i.hasNext(); ) {
-            Character ch = i.next();
-            Cell c = at(ch);
-            System.out.print("[" + ch + ":" + c + "]");
-        }
-        System.out.println();
     }
     
     /**
@@ -332,7 +238,7 @@ public class Row {
         for (Iterator<Character> i = cells.keySet().iterator(); i.hasNext(); ) {
             Character ch = i.next();
             Cell c = at(ch);
-            res += "[" + ch + ":" + c + "]\n";
+            res += "[" + ch + ":" + c + "]";
         }
         return res;
     }

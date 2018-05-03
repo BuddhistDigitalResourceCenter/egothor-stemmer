@@ -74,11 +74,7 @@ public class TestCompile {
 		DataInputStream is = new DataInputStream(new BufferedInputStream(
 				Files.newInputStream(path)));
 		String method = is.readUTF().toUpperCase(Locale.ROOT);
-		if (method.indexOf('M') < 0) {
-			trie = new Trie(is);
-		} else {
-			trie = new MultiTrie(is);
-		}
+		trie = new Trie(is);
 		is.close();
 		return trie;
 	}

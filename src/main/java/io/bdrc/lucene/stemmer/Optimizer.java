@@ -1,5 +1,4 @@
 /*
-                    Egothor Software License version 2.00
                     Copyright (C) 1997-2004 Leo Galambos.
                  Copyright (C) 2002-2004 "Egothor developers"
                       on behalf of the Egothor Project.
@@ -94,6 +93,12 @@ public class Optimizer extends Reduce {
             for (int i = 0; i < rows.size(); i++) {
                 final Row q = merge(now, rows.elementAt(i));
                 if (q != null) {
+                    System.out.println("merged :");
+                    System.out.println(now);
+                    System.out.println("and");
+                    System.out.println(rows.elementAt(i));
+                    System.out.println("into");
+                    System.out.println(q);
                     rows.setElementAt(q, i);
                     merged = true;
                     remap[j] = i;
@@ -159,44 +164,6 @@ public class Optimizer extends Reduce {
      *      cannot be realized
      */
     public Cell merge(final Cell m, final Cell e) {
-        final Cell n = new Cell();
-
-        if (m.skip != e.skip) {
-            return null;
-        }
-
-        if (m.cmd >= 0) {
-            if (e.cmd >= 0) {
-                if (m.cmd == e.cmd) {
-                    n.cmd = m.cmd;
-                } else {
-                    return null;
-                }
-            } else {
-                n.cmd = m.cmd;
-            }
-        } else {
-            n.cmd = e.cmd;
-        }
-        if (m.ref >= 0) {
-            if (e.ref >= 0) {
-                if (m.ref == e.ref) {
-                    if (m.skip == e.skip) {
-                        n.ref = m.ref;
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            } else {
-                n.ref = m.ref;
-            }
-        } else {
-            n.ref = e.ref;
-        }
-        n.cnt = m.cnt + e.cnt;
-        n.skip = m.skip;
-        return n;
+        return null;
     }
 }

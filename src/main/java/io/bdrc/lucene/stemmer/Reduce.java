@@ -104,10 +104,13 @@ public class Reduce {
      * @return        Description of the Return Value
      */
     Vector<Row> removeGaps(int ind, Vector<Row> old, Vector<Row> to, int remap[]) {
+        System.out.println("ind: "+ind);
+        System.out.println("to.size: "+to.size());
         remap[ind] = to.size();
-
+        
         final Row now = old.elementAt(ind);
         to.addElement(now);
+        System.out.println("remove gaps in "+now.toString());
         final Iterator<Cell> i = now.cells.values().iterator();
         for (; i.hasNext(); ) {
             final Cell c = i.next();
@@ -115,6 +118,9 @@ public class Reduce {
                 removeGaps(c.ref, old, to, remap);
             }
         }
+//        System.out.println(Arrays.toString(remap));
+//        for (Row r : old)
+//            System.out.println(r.toString());
         to.setElementAt(new Remap(now, remap), remap[ind]);
         return to;
     }

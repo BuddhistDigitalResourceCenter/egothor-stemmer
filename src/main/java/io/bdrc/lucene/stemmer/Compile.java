@@ -143,30 +143,10 @@ public class Compile {
                 }
 
                 Optimizer o = new Optimizer();
-                Optimizer2 o2 = new Optimizer2();
-                Lift l = new Lift(true);
-                Lift e = new Lift(false);
-                Gener g = new Gener();
 
                 for (int j = 0; j < optimizer.length; j++) {
                     String prefix;
                     switch (optimizer[j]) {
-                        case 'G':
-                            trie = trie.reduce(g);
-                            prefix = "G: ";
-                            break;
-                        case 'L':
-                            trie = trie.reduce(l);
-                            prefix = "L: ";
-                            break;
-                        case 'E':
-                            trie = trie.reduce(e);
-                            prefix = "E: ";
-                            break;
-                        case '2':
-                            trie = trie.reduce(o2);
-                            prefix = "2: ";
-                            break;
                         case '1':
                             trie = trie.reduce(o);
                             prefix = "1: ";
@@ -174,7 +154,7 @@ public class Compile {
                         default:
                             continue;
                     }
-                    trie.printInfo(prefix + " ");
+                    System.out.println(prefix+" "+trie.toString());
                 }
 
                 DataOutputStream os = new DataOutputStream(
@@ -197,11 +177,7 @@ public class Compile {
      *  Description of the Method
      */
     static void allocTrie() {
-        if (multi) {
-            trie = new MultiTrie2(!backward);
-        } else {
-            trie = new Trie(!backward);
-        }
+        trie = new Trie(!backward);
     }
 
 }

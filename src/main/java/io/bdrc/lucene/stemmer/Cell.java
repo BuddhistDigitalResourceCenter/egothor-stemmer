@@ -68,10 +68,6 @@ class Cell {
     int ref = -1;
     // command of the cell
     int cmd = -1;
-    // how many cmd-s was in subtrie before pack()
-    int cnt = 0;
-    // how many chars would be discarded from input key in this way
-    int skip = 0;
 
     /**
      * get the command identifier (use getCommandVal() if you want the value
@@ -96,8 +92,6 @@ class Cell {
     Cell(Cell a) {
         ref = a.ref;
         cmd = a.cmd;
-        cnt = a.cnt;
-        skip = a.skip;
     }
 
 
@@ -107,6 +101,6 @@ class Cell {
      * @return    a String representation of this Cell
      */
     public String toString() {
-        return "ref(" + ref + ")cmd(" + cmd + ")cnt(" + cnt + ")skp(" + skip + ")";
+        return ref+"|"+cmd;
     }
 }
