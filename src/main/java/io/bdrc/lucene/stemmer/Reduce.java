@@ -63,7 +63,7 @@ import java.util.*;
 
 /**
  *  The Reduce object is used to remove gaps in a Trie which stores a
- *  dictionary..
+ *  dictionary.
  *  
  *  This product includes software developed by the Egothor Project. http://www.egothor.org/
  *
@@ -84,16 +84,33 @@ public class Reduce {
 		}
     }
 
+    public void printDebug(Trie t) {
+    	System.out.println(t.toString());
+    	for (int rowId = 0 ; rowId < t.rows.size() ; rowId++) {
+    		final Row r = t.getRow(rowId);
+    		System.out.println("row "+rowId+":");
+    		System.out.println(r);
+    	}
+    }
+    
+    // this optimization is safe in the sense that you can still walk the trie and
+    // find the exact same results for all lookups (valid or not)
+    
     public Trie optimize(Trie orig) {
     	final Map<Integer,Integer> rowIdMappings = new HashMap<>();
     	Map<BigInteger,Integer> rowMdMappings = new HashMap<>();
+    	final int origRowsSize = orig.rows.size();
         
+    	//printDebug(orig);
+    	
     	int nbChanges = fillMappings(orig, orig.root, rowIdMappings, rowMdMappings);
     	
     	if (nbChanges == 0) {
     		System.out.println("no changes");
     		return orig;
     	}
+    	
+    	System.out.println("merged "+nbChanges+" of the "+origRowsSize+" rows");
     	
     	rowMdMappings = null; // gc
     	
@@ -102,21 +119,23 @@ public class Reduce {
     	// se we build a second mapping mapping these new indexes to a compact index
     	int curCompactId = 0;
     	final Map<Integer,Integer> compactMapping = new HashMap<>();
-    	for (int origRowId = 0 ; origRowId < orig.rows.size() ; origRowId ++) {
-    		if (compactMapping.containsKey(origRowId))
+    	for (int origRowId = 0 ; origRowId < origRowsSize ; origRowId ++) {
+    		if (rowIdMappings.containsKey(origRowId))
     			continue;
     		compactMapping.put(origRowId, curCompactId);
     		curCompactId += 1;
     	}
     	final Vector<Row> newRows = new Vector<Row>(curCompactId);
-    	for (int i = 0 ; i < orig.rows.size() ; i++) {
-    		if (rowIdMappings.containsKey(i))
+    	for (int origRowId = 0 ; origRowId < origRowsSize ; origRowId++) {
+    		if (rowIdMappings.containsKey(origRowId))
     			continue;
-    		final Row newRow = new Remap(orig.getRow(i), compactMapping);
-    		newRows.setElementAt(newRow, compactMapping.get(i));
+    		final Row newRow = new Remap(orig.getRow(origRowId), compactMapping);
+    		newRows.add(newRow);
     	}
     	
-        return new Trie(orig.forward, compactMapping.get(orig.root), orig.cmds, newRows);
+        final Trie res = new Trie(orig.forward, compactMapping.get(orig.root), orig.cmds, newRows);
+        //printDebug(res);
+        return res;
     }
 
     BigInteger updateRowAndGetMd(final Row r, final Map<Integer,Integer> rowIdMappings) {
@@ -144,39 +163,6 @@ public class Reduce {
         }
         return nbChanges;
     }
-    
-
-    /**
-     *  Description of the Method
-     *
-     * @param  ind    Description of the Parameter
-     * @param  old    Description of the Parameter
-     * @param  to     Description of the Parameter
-     * @param  remap  Description of the Parameter
-     * @return        Description of the Return Value
-     */
-    Vector<Row> removeGaps(int ind, Vector<Row> old, Vector<Row> to, int remap[]) {
-        System.out.println("ind: "+ind);
-        System.out.println("to.size: "+to.size());
-        remap[ind] = to.size();
-        
-        final Row now = old.elementAt(ind);
-        to.addElement(now);
-        System.out.println("remove gaps in "+now.toString());
-        final Iterator<Cell> i = now.cells.values().iterator();
-        for (; i.hasNext(); ) {
-            final Cell c = i.next();
-            if (c.ref >= 0 && remap[c.ref] < 0) {
-                removeGaps(c.ref, old, to, remap);
-            }
-        }
-//        System.out.println(Arrays.toString(remap));
-//        for (Row r : old)
-//            System.out.println(r.toString());
-        to.setElementAt(new Remap(now, remap), remap[ind]);
-        return to;
-    }
-
 
     /**
      *  This class is part of the Egothor Project
@@ -184,22 +170,6 @@ public class Reduce {
      * @author    Leo Galambos
      */
     class Remap extends Row {
-        public Remap(Row old, int remap[]) {
-            super();
-            final Iterator<Character> i = old.cells.keySet().iterator();
-            for (; i.hasNext(); ) {
-                final Character ch = i.next();
-                final Cell c = old.at(ch);
-                final Cell nc;
-                if (c.ref >= 0) {
-                    nc = new Cell(c);
-                    nc.ref = remap[nc.ref];
-                } else {
-                    nc = new Cell(c);
-                }
-                cells.put(ch, nc);
-            }
-        }
 
         public Remap(Row old, final Map<Integer,Integer> compactMappings) {
             super();

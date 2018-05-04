@@ -401,9 +401,9 @@ public class Trie {
      *  Description of the Method
      */
     public String toString() {
-        return "nds " + rows.size() + " cmds " +
-                cmds.size() + " cells " + getCells() +
-                " pntcells " + getCellsPnt();
+        return "rows: " + rows.size() + " root: " + root + " forward: " + forward +  " cmds: " +
+                cmds.size() + " cells: " + getCells() +
+                " pntcells: " + getCellsPnt();
     }
 
     /**

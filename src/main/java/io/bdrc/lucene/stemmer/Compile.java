@@ -142,13 +142,13 @@ public class Compile {
                     }
                 }
 
-                Optimizer o = new Optimizer();
+                Reduce r = new Reduce();
 
                 for (int j = 0; j < optimizer.length; j++) {
                     String prefix;
                     switch (optimizer[j]) {
                         case '1':
-                            trie = trie.reduce(o);
+                            trie = trie.reduce(r);
                             prefix = "1: ";
                             break;
                         default:
