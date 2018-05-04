@@ -81,7 +81,7 @@ public class Row {
      */
     public Row(DataInput is) throws IOException {
         for (int i = is.readInt(); i > 0; i--) {
-            final Character ch = new Character(is.readChar());
+            final Character ch = Character.valueOf(is.readChar());
             final Cell c = new Cell();
             c.cmd = is.readInt();
             c.ref = is.readInt();

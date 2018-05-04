@@ -160,7 +160,7 @@ public class Trie {
         boolean br = false;
 
         for (int i = 0; i < key.length() - 1; i++) {
-            final Character ch = new Character(e.next());
+            final Character ch = Character.valueOf(e.next());
             w = now.getCmd(ch);
             if (w >= 0) {
                 int n = w;
@@ -183,7 +183,7 @@ public class Trie {
             }
         }
         if (br == false) {
-            w = now.getCmd(new Character(e.next()));
+            w = now.getCmd(Character.valueOf(e.next()));
             if (w >= 0) {
                 int n = w;
                 for (int j = 0; j < resc; j++) {
@@ -201,7 +201,7 @@ public class Trie {
         if (resc < 1) {
             return null;
         }
-        String R[] = new String[resc];
+        final String R[] = new String[resc];
         for (int j = 0; j < resc; j++) {
             R[j] = cmds.elementAt(res[j]);
         }
@@ -252,10 +252,9 @@ public class Trie {
         Cell c;
         int cmd = -1;
         final StrEnum e = new StrEnum(key, forward);
-        Character ch = null;
 
         for (int i = 0; i < key.length(); ) {
-            ch = new Character(e.next());
+            final Character ch = Character.valueOf(e.next());
             i++;
 
             c = now.at(ch);
@@ -290,7 +289,7 @@ public class Trie {
         StrEnum e = new StrEnum(key, forward);
 
         for (int i = 0; i < key.length() - 1; i++) {
-            Character ch = new Character(e.next());
+            final Character ch = Character.valueOf(e.next());
             w = now.getCmd(ch);
             if (w >= 0) {
                 last = cmds.elementAt(w);
@@ -302,7 +301,7 @@ public class Trie {
                 return last;
             }
         }
-        w = now.getCmd(new Character(e.next()));
+        w = now.getCmd(Character.valueOf(e.next()));
         return (w >= 0) ? cmds.elementAt(w) : last;
     }
 
@@ -330,12 +329,12 @@ public class Trie {
     public void store(DataOutput os) throws IOException {
         os.writeBoolean(forward);
         os.writeInt(root);
-        Enumeration<String> e = cmds.elements();
+        final Enumeration<String> e = cmds.elements();
         os.writeInt(cmds.size());
         while (e.hasMoreElements()) {
             os.writeUTF(e.nextElement());
         }
-        Enumeration<Row> erow = rows.elements();
+        final Enumeration<Row> erow = rows.elements();
         os.writeInt(rows.size());
         while (erow.hasMoreElements()) {
             Row r = erow.nextElement();
@@ -367,10 +366,10 @@ public class Trie {
         int node = root;
         Row r = getRow(node);
 
-        StrEnum e = new StrEnum(key, forward);
+        final StrEnum e = new StrEnum(key, forward);
 
         for (int i = 0; i < e.length() - 1; i++) {
-            Character ch = new Character(e.next());
+            final Character ch = Character.valueOf(e.next());
             node = r.getRef(ch);
             if (node >= 0) {
                 r = getRow(node);
@@ -382,7 +381,7 @@ public class Trie {
                 r = n;
             }
         }
-        r.setCmd(new Character(e.next()), id_cmd);
+        r.setCmd(Character.valueOf(e.next()), id_cmd);
     }
 
 

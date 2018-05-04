@@ -73,7 +73,7 @@ public class TestCompile {
 		Trie trie;
 		DataInputStream is = new DataInputStream(new BufferedInputStream(
 				Files.newInputStream(path)));
-		String method = is.readUTF().toUpperCase(Locale.ROOT);
+		is.readUTF().toUpperCase(Locale.ROOT);
 		trie = new Trie(is);
 		is.close();
 		return trie;
