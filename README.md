@@ -1,4 +1,4 @@
-# Stemmer Trie
+# Stemmer Trie 
 
 This repository contains the code of `org.egothor.stemmer` slightly modified and renamed `io.bdrc.lucene.stemmer`. 
 
